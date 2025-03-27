@@ -1,6 +1,6 @@
 import React from "react";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
-import Splash from "../../assets/splash.png";
+import SplashHome from "../../assets/splash.png";
 import { FirstAid, Headphones } from "@phosphor-icons/react";
 
 function Home() {
@@ -15,7 +15,7 @@ function Home() {
         </p>
 
         <div className="flex flex-col lg:flex-row items-center justify-between mt-10">
-          <img src={Splash} alt="Splash" className="w-full max-w-xl lg:w-1/2" />
+          <img src={SplashHome} alt="Splash" className="w-full max-w-xl lg:w-1/2" />
 
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 mt-8 mr-8 lg:mt-0">
             <div className="bg-custom-light rounded-2xl p-6 w-72 shadow-md hover:bg-custom-light-hover ease-in duration-150">

@@ -19,7 +19,7 @@ function LayoutPrincipal({ children }) {
             placeholder="Encontre um profissional"
             className="w-full bg-transparent border-none focus:outline-none placeholder:text-gray-400 text-gray-600"
           />
-          <MagnifyingGlass size={24} className="text-gray-400 hover:text-gray-600 ease-in duration-150" />
+          <MagnifyingGlass size={24} className="text-gray-400 hover:text-gray-600 cursor-pointer ease-in duration-150" />
         </div>
 
         <div className="hidden sm:flex items-center gap-4 text-md">
@@ -36,6 +36,11 @@ function LayoutPrincipal({ children }) {
           <Link to="/" className="flex items-center gap-1 font-bold hover:text-gray-700 ease-in duration-150 cursor-pointer">
             <ShootingStar size={18} className="text-custom-teal" />
             <span>Serviços</span>
+          </Link>
+          <span className="text-teal-500">|</span>
+          <Link to="/busca-avancada" className="flex items-center gap-1 font-bold hover:text-gray-700 ease-in duration-150 cursor-pointer">
+            <MagnifyingGlass size={18} className="text-custom-teal" />
+            <span>Busca Avançada</span>
           </Link>
         </div>
 

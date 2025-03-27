@@ -6,6 +6,7 @@ import Cadastro from "./pages/Cadastro/Cadastro";
 import RecuperarSenha from "./pages/RecuperarSenha/RecuperarSenha";
 import Home from "./pages/Home/Home";
 import BuscaAvancada from "./pages/BuscaAvancada/BuscaAvancada";
+import FaleConosco from "./pages/FaleConosco/FaleConosco";
 
 function AppRoutes() {
     return (
@@ -17,6 +18,7 @@ function AppRoutes() {
                 <Route path="/recuperarsenha" element={<RecuperarSenha />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/busca-avancada" element={<BuscaAvancada />} />
+                <Route path="/fale-conosco" element={<FaleConosco />} />
                 {/* <Route path="/agendamentos" element={<Home />} />
                 <Route path="/perfil" element={<Home />} />
                 <Route path="/configuracoes" element={<Home />} /> */}

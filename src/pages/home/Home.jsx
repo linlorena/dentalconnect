@@ -1,6 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
 import SplashHome from "../../assets/splash.png";
+import FaleConosco from "../FaleConosco/FaleConosco";
 import { FirstAid, Headphones } from "@phosphor-icons/react";
 
 function Home() {
@@ -26,13 +28,15 @@ function Home() {
                 <p className="text-gray-600 mt-2 text-md leading-snug text-center">Temos um amplo cardápio de procedimentos eletivos e tratamentos disponíveis para você.</p>
             </div>
 
-            <div className="bg-custom-light rounded-2xl p-6 w-72 shadow-md hover:bg-custom-light-hover ease-in duration-150">
-                <div className="flex flex-col items-center">
-                    <Headphones size={60} className="text-sky-900" />
-                    <h2 className="text-3xl font-bold text-custom-teal-2 mt-2">Fale Conosco</h2>
-                </div>
-                <p className="text-gray-600 mt-2 text-md leading-snug text-center">A DentalConnect quer te escutar. Envie suas sugestões, reclamações ou elogios.</p>
-            </div>
+            <Link to="/fale-conosco">
+              <div className="bg-custom-light rounded-2xl p-6 w-72 shadow-md hover:bg-custom-light-hover ease-in duration-150">
+                  <div className="flex flex-col items-center">
+                      <Headphones size={60} className="text-sky-900" />
+                      <h2 className="text-3xl font-bold text-custom-teal-2 mt-2">Fale Conosco</h2>
+                  </div>
+                  <p className="text-gray-600 mt-2 text-md leading-snug text-center">A DentalConnect quer te escutar. Envie suas sugestões, reclamações ou elogios.</p>
+              </div>
+            </Link>
           </div>
         </div>
       </div>

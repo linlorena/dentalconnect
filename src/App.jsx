@@ -9,6 +9,9 @@ import Inicial from "./pages/Inicial/Inicial"
 import Login from "./pages/login/Login"
 import Cadastro from "./pages/Cadastro/Cadastro"
 import RecuperarSenha from "./pages/RecuperarSenha/RecuperarSenha"
+import BuscaAvancada from "./pages/BuscaAvancada/BuscaAvancada"
+import MeusAgendamentos from "./pages/MeusAgendamentos/MeusAgendamentos"
+import FaleConosco from "./pages/FaleConosco/FaleConosco"
 
 const AppRoutes = () => {
   const { signed, loading } = useAuth()
@@ -69,6 +72,18 @@ const AppRoutes = () => {
     {
       path: "*",
       element: <Navigate to="/home" replace />,
+    },
+    {
+      path: "/busca-avancada",
+      element: <BuscaAvancada />,
+    },
+    {
+      path: "/agendamentos",
+      element: <MeusAgendamentos />,
+    },
+    {
+      path: "/fale-conosco",
+      element: <FaleConosco />,
     },
   ])
   if (!isReady) {

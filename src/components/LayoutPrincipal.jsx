@@ -28,12 +28,12 @@ function LayoutPrincipal({ children }) {
             <span>Início</span>
           </Link>
           <span className="text-teal-500">|</span>
-          <Link to="/" className="flex items-center gap-1 font-bold hover:text-gray-700 ease-in duration-150 cursor-pointer">
+          <Link to="/agendamentos" className="flex items-center gap-1 font-bold hover:text-gray-700 ease-in duration-150 cursor-pointer">
             <Tooth size={18} className="text-custom-teal" />
             <span>Agendamentos</span>
           </Link>
           <span className="text-teal-500">|</span>
-          <Link to="/" className="flex items-center gap-1 font-bold hover:text-gray-700 ease-in duration-150 cursor-pointer">
+          <Link to="/servicos" className="flex items-center gap-1 font-bold hover:text-gray-700 ease-in duration-150 cursor-pointer">
             <ShootingStar size={18} className="text-custom-teal" />
             <span>Serviços</span>
           </Link>

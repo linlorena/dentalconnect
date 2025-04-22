@@ -2,8 +2,17 @@ import React from "react";
 import { House, MagnifyingGlass, ShootingStar, SignIn, Tooth } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import Logo from "../assets/logo_dentalconnect.png";
+import { useAuth } from '../context/auth';
 
 function LayoutPrincipal({ children }) {
+
+    const { logout } = useAuth();
+  
+    const handleLogout = () => {
+      logout();
+      navigate('/login');
+    };
+
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between px-4 py-4 bg-stone-100 border-b-4 border-teal-600 drop-shadow-sm">
@@ -44,12 +53,13 @@ function LayoutPrincipal({ children }) {
           </Link>
         </div>
 
-        <Link to="/">
-          <div className="flex items-center rounded-3xl bg-orange-500 hover:bg-orange-600 px-4 py-2 mr-4 ease-in duration-150 cursor-pointer hover:drop-shadow-xs">
-            <SignIn size={20} className="text-gray-900 mr-2" />
-            <span className="text-gray-900 font-bold">Sair</span>
-          </div>
-        </Link>
+            <div className="flex items-center rounded-3xl bg-orange-500 hover:bg-orange-600 px-4 py-2 mr-4 ease-in duration-150 cursor-pointer hover:drop-shadow-xs">
+              <SignIn size={20} className="text-gray-900 mr-2" />
+              <button 
+              onClick={handleLogout}
+              className="text-gray-900 font-bold">Sair</button>
+            </div>
+  
       </div>
 
       <div className="p-6">{children}</div>

@@ -12,6 +12,8 @@ import RecuperarSenha from "./pages/RecuperarSenha/RecuperarSenha"
 import BuscaAvancada from "./pages/BuscaAvancada/BuscaAvancada"
 import MeusAgendamentos from "./pages/MeusAgendamentos/MeusAgendamentos"
 import FaleConosco from "./pages/FaleConosco/FaleConosco"
+import Tratamentos from "./pages/Tratamentos/Tratamentos"
+
 
 const AppRoutes = () => {
   const { signed, loading } = useAuth()
@@ -80,6 +82,10 @@ const AppRoutes = () => {
     {
       path: "/agendamentos",
       element: <MeusAgendamentos />,
+    },
+    {
+      path: "/tratamentos",
+      element: <Tratamentos />,
     },
     {
       path: "/fale-conosco",

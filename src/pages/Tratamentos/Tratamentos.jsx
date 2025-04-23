@@ -15,8 +15,8 @@ function Tratamentos() {
 
     return (
         <LayoutPrincipal>
-            <div className="w-full h-full min-h-screen overflow-hidden flex flex-col">
-                <div className="flex-grow px-4 md:px-12 py-10 overflow-auto">
+            <div className="w-full h-full flex flex-col">
+                <div className="flex-grow px-4 md:px-12 py-10">
                     <div className="text-center mb-8">
                         <h2 className="text-4xl font-bold text-sky-900">Nossos Tratamentos</h2>
                         <p className="text-lg mt-4 text-sky-900 max-w-2xl mx-auto">

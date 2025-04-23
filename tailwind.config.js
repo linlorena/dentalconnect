@@ -8,5 +8,12 @@ module.exports = {
       },
     },
   },
+  theme: {
+    extend: {
+      colors: {
+        'custom-teal': '#00B6BC',
+      },
+    },
+  },  
   plugins: [],
 };

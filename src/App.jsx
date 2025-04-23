@@ -13,6 +13,7 @@ import BuscaAvancada from "./pages/BuscaAvancada/BuscaAvancada"
 import MeusAgendamentos from "./pages/MeusAgendamentos/MeusAgendamentos"
 import FaleConosco from "./pages/FaleConosco/FaleConosco"
 import Tratamentos from "./pages/Tratamentos/Tratamentos"
+import Servicos from "./pages/Servicos/Servicos"
 
 
 const AppRoutes = () => {
@@ -87,6 +88,10 @@ const AppRoutes = () => {
       path: "/tratamentos",
       element: <Tratamentos />,
     },
+    {
+      path: "/servicos",
+      element: <Servicos />,
+    },   
     {
       path: "/fale-conosco",
       element: <FaleConosco />,

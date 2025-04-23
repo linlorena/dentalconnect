@@ -135,16 +135,6 @@ function Servicos() {
                             &gt;
                         </button>
                     </div>
-
-                    {/* Botão Voltar ao Menu */}
-                    <div className="mt-8 flex justify-center">
-                        <button
-                            onClick={handleVoltar}
-                            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                        >
-                            Voltar ao Menu
-                        </button>
-                    </div>
                 </div>
             </div>
         </LayoutPrincipal>

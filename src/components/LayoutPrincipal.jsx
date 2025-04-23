@@ -1,14 +1,16 @@
 import React from "react";
 import { House, MagnifyingGlass, ShootingStar, SignIn, Tooth } from "@phosphor-icons/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo_dentalconnect.png";
+import { useAuth } from '../context/auth';
 
 function LayoutPrincipal({ children }) {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  
   const handleLogout = () => {
-    // Adicione aqui a lógica de logout, por exemplo, limpando o localStorage ou fazendo uma requisição para deslogar
-    console.log("Usuário deslogado");
-    // Redireciona para a página inicial ou de login
-    window.location.href = "/";
+    logout();
+    navigate('/login');
   };
 
   return (
@@ -50,9 +52,11 @@ function LayoutPrincipal({ children }) {
           </Link>
         </div>
 
-        <div className="flex items-center rounded-3xl bg-orange-500 hover:bg-orange-600 px-4 py-2 ml-6 ease-in duration-150 cursor-pointer hover:drop-shadow-xs">
+        <div className="flex items-center rounded-3xl bg-orange-500 hover:bg-orange-600 px-4 py-2 mr-4 ease-in duration-150 cursor-pointer hover:drop-shadow-xs">
           <SignIn size={20} className="text-gray-900 mr-2" />
-          <button onClick={handleLogout} className="text-gray-900 font-bold">Sair</button>
+          <button 
+            onClick={handleLogout}
+            className="text-gray-900 font-bold">Sair</button>
         </div>
       </div>
 

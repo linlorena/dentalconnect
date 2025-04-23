@@ -31,5 +31,18 @@
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
     "vite": "^6.1.0"
-  }
+  },
+  "description": "Comandos: npm install - instalar as dependencias do projeto //  npm run dev - iniciar o servidor",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linlorena/dentalconnect.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/linlorena/dentalconnect/issues"
+  },
+  "homepage": "https://github.com/linlorena/dentalconnect#readme"
 }

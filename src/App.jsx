@@ -14,6 +14,7 @@ import MeusAgendamentos from "./pages/MeusAgendamentos/MeusAgendamentos"
 import FaleConosco from "./pages/FaleConosco/FaleConosco"
 import Tratamentos from "./pages/Tratamentos/Tratamentos"
 import Servicos from "./pages/Servicos/Servicos"
+import Consultas from "./pages/Consultas/Consultas"
 
 
 const AppRoutes = () => {
@@ -92,6 +93,10 @@ const AppRoutes = () => {
       path: "/servicos",
       element: <Servicos />,
     },   
+    {
+      path: "/consultas",
+      element: <Consultas />,
+    },
     {
       path: "/fale-conosco",
       element: <FaleConosco />,

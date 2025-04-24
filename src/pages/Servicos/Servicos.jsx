@@ -42,7 +42,7 @@ function Servicos() {
 
     // Função para navegar para a tela de MeusAgendamentos
     const handleAgendar = (codigo) => {
-        navigate("/agendamentos");
+        navigate("/consultas");
     };
 
     // Função para voltar ao menu principal

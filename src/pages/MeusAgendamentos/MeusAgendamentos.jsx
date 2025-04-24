@@ -6,13 +6,23 @@ import axios from "axios";
 import dayjs from "dayjs";
 import 'dayjs/locale/pt-br';
 dayjs.locale('pt-br');
+import { useAuth } from "../../context/auth"
 
 function MeusAgendamentos() {
   const [modalAberto, setModalAberto] = useState(false);
   const [agendamentos, setAgendamentos] = useState([]);
   const [locais, setLocais] = useState([]);
-  const [nomeUsuario, setNomeUsuario] = useState("Carregando...");
   const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null); // Estado para controlar o agendamento selecionado
+
+  const { nome } = useAuth()
+
+  const formatarNome = (nome) => {
+    if (!nome) return "Usuário"
+    
+    return nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase()
+  }
+
+  const nomeFormatado = formatarNome(nome)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,20 +43,14 @@ function MeusAgendamentos() {
   const handleAgendamentoClick = (agendamento) => {
     const localSelecionado = locais.find((l) => l.id === agendamento.local);
     const nomeLocal = localSelecionado?.nome || "Local não encontrado";
-    const enderecoLocal = localSelecionado
-      ? `${localSelecionado.endereco}, ${localSelecionado.numero} - ${localSelecionado.cidade}, ${localSelecionado.estado}`
-      : "Endereço não encontrado";
+    const enderecoLocal = localSelecionado ? `${localSelecionado.endereco}, ${localSelecionado.numero} - ${localSelecionado.cidade}, ${localSelecionado.estado}` : "Endereço não encontrado";
     const enderecoEncoded = encodeURIComponent(enderecoLocal);
 
-    // Alternar entre mostrar ou esconder a div com o endereço
     if (agendamentoSelecionado && agendamentoSelecionado.agendamento.id === agendamento.id) {
-      setAgendamentoSelecionado(null); // Se já estiver selecionado, desmarca
+      setAgendamentoSelecionado(null); 
     } else {
       setAgendamentoSelecionado({
-        agendamento,
-        nomeLocal,
-        enderecoLocal,
-        enderecoEncoded,
+        agendamento, nomeLocal, enderecoLocal, enderecoEncoded,
       });
     }
   };
@@ -70,7 +74,7 @@ function MeusAgendamentos() {
         <div className="bg-white rounded-3xl shadow-md p-6 flex items-center gap-4 mb-6">
           <img src={Avatar} className="w-20 h-20 rounded-full border-5 border-custom-teal" />
           <div>
-            <h2 className="text-xl font-semibold text-gray-700">{nomeUsuario}</h2>
+            <h2 className="text-xl font-semibold text-gray-700">{nomeFormatado}</h2>
             <p className="text-sm text-gray-500">Cadastrado em 31 de março de 2024</p>
           </div>
         </div>
@@ -90,11 +94,7 @@ function MeusAgendamentos() {
             const statusStyle = statusClasses[status] || "text-gray-600 bg-gray-100";
 
             return (
-              <div
-                key={i}
-                className="bg-sky-50 hover:bg-sky-100 duration-150 ease-in rounded-2xl p-4 text-center shadow-sm"
-                onClick={() => handleAgendamentoClick(agendamento)} // Ao clicar, alterna a exibição dos dados do local
-              >
+              <div key={i} className="bg-sky-50 hover:bg-sky-100 duration-150 ease-in rounded-2xl p-4 text-center shadow-sm" onClick={() => handleAgendamentoClick(agendamento)}>
                 <p className="text-2xl font-bold text-custom-teal-2">{dataFormatada}</p>
                 <p className="text-sm font-medium text-gray-600 capitalize">{diaSemana}</p>
                 <p className="text-base font-semibold text-gray-800 mt-1">{hora}</p>
@@ -106,7 +106,6 @@ function MeusAgendamentos() {
           })}
         </div>
 
-        {/* Exibe a div com as informações do local abaixo dos agendamentos */}
         {agendamentoSelecionado && (
           <div className="bg-white rounded-3xl shadow-md p-6 flex flex-col md:flex-row items-start gap-6 mt-8">
             <div className="flex-1">
@@ -114,53 +113,34 @@ function MeusAgendamentos() {
                 <MapPin size={24} />
                 {agendamentoSelecionado.nomeLocal}
               </h3>
+              <p className="text-sm text-gray-500">
+                <span className="font-semibold text-custom-teal-2">Profissional:</span> {/* {agendamentoSelecionado.agendamento.dentista_nome} */} nome do dentista (CRO {/* {agendamentoSelecionado.agendamento.dentista_cro} */} numero)
+              </p>
               <p className="text-sm text-gray-600">{agendamentoSelecionado.enderecoLocal}</p>
-              <button
-                onClick={handleVerNoMapa}
-                className="mt-4 px-4 py-2 bg-sky-100 font-bold text-sky-900 rounded-2xl hover:bg-custom-light-hover ease-in duration-150"
-              >
+              <button onClick={handleVerNoMapa} className="mt-4 px-4 py-2 bg-sky-100 font-bold text-sky-900 rounded-2xl hover:bg-custom-light-hover ease-in duration-150">
                 Ver no mapa
               </button>
             </div>
 
             <div className="w-full md:w-100 h-40 overflow-hidden rounded-xl drop-shadow-md shadow hidden md:block">
               <iframe
-                title="Mapa"
-                src={`https://www.google.com/maps?q=${agendamentoSelecionado.enderecoEncoded}&z=16&output=embed`}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-              ></iframe>
+                title="Mapa" src={`https://www.google.com/maps?q=${agendamentoSelecionado.enderecoEncoded}&z=17&output=embed`}
+                width="100%" height="100%" style={{ border: 0 }}
+                allowFullScreen="" loading="lazy"></iframe>
             </div>
           </div>
         )}
 
-        {/* Modal do mapa */}
         {modalAberto && agendamentoSelecionado && (
           <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm" style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}>
             <div className="bg-white p-4 rounded-3xl shadow-lg w-full max-w-3xl relative">
-              <button
-                onClick={fecharModal}
-                className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 text-xl"
-              >
-                <X
-                  size={32}
-                  className="bg-white rounded-full p-2 text-gray-400 hover:text-custom-teal-2 duration-150 ease-in drop-shadow-md"
-                  weight="bold"
-                />
+              <button onClick={fecharModal} className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 text-xl">
+                <X size={32} className="bg-white rounded-full p-2 text-gray-400 hover:text-custom-teal-2 duration-150 ease-in drop-shadow-md" weight="bold" />
               </button>
               <iframe
-                title="Mapa"
-                src={`https://www.google.com/maps?q=${agendamentoSelecionado.enderecoEncoded}&z=16&output=embed`}
-                width="100%"
-                height="500"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                className="rounded-2xl"
-              ></iframe>
+                title="Mapa" src={`https://www.google.com/maps?q=${agendamentoSelecionado.enderecoEncoded}&z=17&output=embed`}
+                width="100%" height="500" style={{ border: 0 }}
+                allowFullScreen="" loading="lazy" className="rounded-2xl"></iframe>
             </div>
           </div>
         )}

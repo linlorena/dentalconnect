@@ -15,6 +15,8 @@ function Home() {
     const primeiroNome = nome.split(" ")[0]
     
     return primeiroNome.charAt(0).toUpperCase() + primeiroNome.slice(1).toLowerCase()
+
+    
   }
 
   const nomeFormatado = formatarNome(nome)

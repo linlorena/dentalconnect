@@ -3,13 +3,28 @@ import { Link } from "react-router-dom";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
 import SplashHome from "../../assets/splash.png";
 import { FirstAid, Headphones } from "@phosphor-icons/react";
+import { useAuth } from "../../context/auth"
 
 function Home() {
+  const { nome } = useAuth()
+
+
+  const formatarNome = (nome) => {
+    if (!nome) return "Usuário"
+
+    const primeiroNome = nome.split(" ")[0]
+    
+    return primeiroNome.charAt(0).toUpperCase() + primeiroNome.slice(1).toLowerCase()
+  }
+
+  const nomeFormatado = formatarNome(nome)
+
+
   return (
     <LayoutPrincipal>
       <div className="w-full max-w-screen-xl mx-auto px-4 py-10 overflow-hidden">
         <h1 className="text-4xl font-bold">
-          Olá, <span className="text-teal-600">usuário</span>!
+          Olá, <span className="text-teal-600">{nomeFormatado}</span>!
         </h1>
         <p className="text-gray-600 text-lg mt-1">
           Como podemos cuidar da sua saúde hoje?

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
-import Avatar from "../../assets/avatar.png";
+import AvatarDefault from "../../assets/avatar.png";
 import { MapPin, X } from "@phosphor-icons/react";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -14,7 +14,7 @@ function MeusAgendamentos() {
   const [locais, setLocais] = useState([]);
   const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null); // Estado para controlar o agendamento selecionado
 
-  const { nome } = useAuth()
+  const { nome, avatar } = useAuth()
 
   const formatarNome = (nome) => {
     if (!nome) return "Usuário"
@@ -72,7 +72,7 @@ function MeusAgendamentos() {
         </h2>
 
         <div className="bg-white rounded-3xl shadow-md p-6 flex items-center gap-4 mb-6">
-          <img src={Avatar} className="w-20 h-20 rounded-full border-5 border-custom-teal" />
+          <img src={avatar || AvatarDefault} className="w-20 h-20 rounded-full object-cover border-5 border-custom-teal" />
           <div>
             <h2 className="text-xl font-semibold text-gray-700">{nomeFormatado}</h2>
             <p className="text-sm text-gray-500">Cadastrado em 31 de março de 2024</p>

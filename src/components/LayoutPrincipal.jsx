@@ -58,10 +58,11 @@ function LayoutPrincipal({ children }) {
         </div>
 
         <div className="flex items-center rounded-3xl bg-orange-500 hover:bg-orange-600 px-4 py-2 mr-4 ease-in duration-150 cursor-pointer hover:drop-shadow-xs">
-          <SignIn size={20} className="text-gray-900 mr-2" />
+          
           <button 
             onClick={handleLogout}
             className="text-gray-900 font-bold">Sair</button>
+            <SignIn size={20} className="text-gray-900  ml-3" />
         </div>
       </div>
 

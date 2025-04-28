@@ -1,5 +1,5 @@
 import React from "react";
-import { House, MagnifyingGlass, ShootingStar, SignIn, Tooth, Stethoscope } from "@phosphor-icons/react"; // Adicionei o ícone Stethoscope para "Consultas"
+import { House, MagnifyingGlass, ShootingStar, SignIn, Tooth, Stethoscope, Gear} from "@phosphor-icons/react"; // Adicionei o ícone Stethoscope para "Consultas"
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo_dentalconnect.png";
 import { useAuth } from '../context/auth';
@@ -54,6 +54,10 @@ function LayoutPrincipal({ children }) {
           <Link to="/busca-avancada" className="flex items-center gap-1 font-bold hover:text-gray-700">
             <MagnifyingGlass size={18} className="text-custom-teal" />
             <span>Busca Avançada</span>
+          </Link>
+          <Link to="/configuracoes" className="flex items-center gap-1 font-bold hover:text-gray-700">
+            <Gear size={18} className="text-custom-teal" />
+            <span>Configurações</span>
           </Link>
         </div>
 

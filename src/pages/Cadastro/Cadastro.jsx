@@ -16,6 +16,12 @@ function Cadastro() {
     const [cidadeSelecionada, setCidadeSelecionada] = useState("");
     const [cpf, setCpf] = useState("");
     const [telefone, setTelefone] = useState("");
+    const [nome, setNome]                   = useState("");
+    const [dataNascimento, setDataNascimento] = useState("");
+    const [email, setEmail]                 = useState("");
+    const [senha, setSenha]                 = useState("");
+    const [confirmarSenha, setConfirmarSenha] = useState("");
+    const [cro, setCro]                     = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {setEstados(estadosData);}, []);
@@ -55,6 +61,38 @@ function Cadastro() {
         setTelefone(formatarTelefone(e.target.value));
     };
 
+    const handleCadastro = async () => {
+        const dados = {
+          nome,
+          email,
+          senha,
+          data_nascimento: dataNascimento,
+          tipo: tipoUsuario,
+          cpf,
+          telefone,
+          cidade: cidadeSelecionada,
+          estado: estadoSelecionado,
+          cro: tipoUsuario === "dentista" ? cro : null
+        };
+        try {
+          const resp = await fetch("http://localhost:3001/api/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dados)
+          });
+          const json = await resp.json();
+          if (resp.ok) {
+            alert("Cadastro realizado com sucesso!");
+            navigate("/login");
+          } else {
+            alert("Erro no cadastro: " + json.error);
+          }
+        } catch (err) {
+          console.error("Erro de conexão:", err);
+          alert("Erro ao conectar com o servidor.");
+        }
+      };
+
     const handleCpfChange = (e) => {setCpf(formatarCPF(e.target.value));};
 
     return (
@@ -76,12 +114,12 @@ function Cadastro() {
                         </div> ) : (
                         <>
                             <div className="grid grid-cols-2 gap-4 w-full">
-                                <input type="text" placeholder="Nome" className="p-3 rounded-lg bg-gray-100 focus:shadow-gray-200 focus:shadow-md text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
-                                <input type="date" placeholder="Data de nascimento" className="p-3 focus:shadow-gray-200 focus:shadow-md rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
+                                <input type="text" placeholder="Nome"  value={nome} onChange={e => setNome(e.target.value)} className="p-3 rounded-lg bg-gray-100 focus:shadow-gray-200 focus:shadow-md text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
+                                <input type="date" placeholder="Data de nascimento" value={dataNascimento} onChange={e => setDataNascimento(e.target.value)} className="p-3 focus:shadow-gray-200 focus:shadow-md rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
                             </div>
                             <div className="grid grid-cols-2 gap-4 w-full mt-4">
                                 <input type="text" placeholder="CPF" value={cpf} onChange={handleCpfChange} maxLength={14} className="p-3 focus:shadow-gray-200 focus:shadow-md rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
-                                <input type="email" placeholder="E-mail" className="p-3 rounded-lg focus:shadow-gray-200 focus:shadow-md bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
+                                <input type="email" placeholder="E-mail" value={email} onChange={e => setEmail(e.target.value)} className="p-3 rounded-lg focus:shadow-gray-200 focus:shadow-md bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
                             </div>
                             <div className="grid grid-cols-2 gap-4 w-full mt-4">
                                 <input type="tel" placeholder="Telefone" value={telefone} onChange={handleTelefoneChange} maxLength={15} className="p-3 focus:shadow-gray-200 focus:shadow-md rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
@@ -89,13 +127,13 @@ function Cadastro() {
                             </div>
                             <div className="grid grid-cols-2 gap-4 w-full mt-4">
                             <div className="relative w-full">
-                                <input type={mostrarSenha ? "text" : "password"} placeholder="Senha" minLength={8} className="p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
+                                <input type={mostrarSenha ? "text" : "password"} placeholder="Senha" value={senha} onChange={e => setSenha(e.target.value)} minLength={8} className="p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
                                 <button type="button" onClick={visibilidadeSenha} className="absolute right-4 top-3 text-gray-500 cursor-pointer">
                                     {mostrarSenha ? <Eye size={24} /> : <EyeClosed size={24} />}
                                 </button>
                             </div>
                             <div className="relative w-full">
-                                    <input type={mostrarSenha2 ? "text" : "password"} placeholder="Confirmar Senha" className="p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
+                                    <input type={mostrarSenha2 ? "text" : "password"} placeholder="Confirmar Senha" value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} className="p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
                                     <button type="button" onClick={() => setmostrarSenha2(!mostrarSenha2)} className="absolute right-4 top-3 text-gray-500 cursor-pointer">
                                         {mostrarSenha2 ? <Eye size={24} /> : <EyeClosed size={24} />}
                                     </button>
@@ -123,9 +161,13 @@ function Cadastro() {
                                 <input type="checkbox" className="accent-custom-teal" /> Aceito os Termos de Uso e Condições.
                             </label>
                         </div>
-                            <button className="w-full mt-6 bg-custom-teal hover:bg-custom-teal-hover text-sky-900 text-xl font-semibold py-3 rounded-lg transition">
-                                Cadastrar
-                            </button>
+                        <button
+        type="button"
+        onClick={handleCadastro}
+        className="w-full mt-6 bg-custom-teal …"
+      >
+        Cadastrar
+      </button>
                         </>
                     )}
                 </div>

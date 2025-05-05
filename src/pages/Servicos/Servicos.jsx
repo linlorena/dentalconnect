@@ -56,7 +56,7 @@ function Servicos() {
                 <div className="flex-grow px-4 md:px-12 py-10">
                     {/* Barra de navegação */}
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-3xl font-bold text-custom-teal">Serviços Disponíveis</h2>
+                        <h2 className="text-3xl font-bold text-sky-600">Serviços Disponíveis</h2>
                         <input
                             type="text"
                             placeholder="Buscar procedimento"

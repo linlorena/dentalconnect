@@ -15,6 +15,7 @@ import FaleConosco from "./pages/FaleConosco/FaleConosco"
 import Tratamentos from "./pages/Tratamentos/Tratamentos"
 import Servicos from "./pages/Servicos/Servicos"
 import Consultas from "./pages/Consultas/Consultas"
+import Configuracao from "./pages/Configuracoes/Configuracoes"
 
 
 const AppRoutes = () => {
@@ -101,6 +102,10 @@ const AppRoutes = () => {
       path: "/fale-conosco",
       element: <FaleConosco />,
     },
+    {
+      path: "/configuracoes",
+      element: < Configuracao/>
+    }
   ])
   if (!isReady) {
     return <div className="flex items-center justify-center min-h-screen">Carregando...</div>

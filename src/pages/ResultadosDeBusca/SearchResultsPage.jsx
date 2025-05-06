@@ -42,7 +42,7 @@ function SearchResultsPage() {
         })
         if (!response.ok) {
           if (response.status === 403) {
-            throw new Error("Acesso não autorizado. Verifique o seu token.")
+            throw new Error("Acesso não autorizado. Faça seu login novamente")
           }
           throw new Error(`Erro HTTP: ${response.status}`)
         }

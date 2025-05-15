@@ -16,6 +16,7 @@ import Tratamentos from "./pages/Tratamentos/Tratamentos"
 import Servicos from "./pages/Servicos/Servicos"
 import Consultas from "./pages/Consultas/Consultas"
 import Configuracao from "./pages/Configuracoes/Configuracoes"
+import SearchResultsPage from "./pages/ResultadosDeBusca/SearchResultsPage"; 
 
 
 const AppRoutes = () => {
@@ -75,8 +76,8 @@ const AppRoutes = () => {
       element: <RecuperarSenha />,
     },
     {
-      path: "*",
-      element: <Navigate to="/home" replace />,
+      path: "/search-results", 
+      element: <SearchResultsPage />,
     },
     {
       path: "/busca-avancada",
@@ -105,7 +106,11 @@ const AppRoutes = () => {
     {
       path: "/configuracoes",
       element: < Configuracao/>
-    }
+    },
+    {
+      path: "*", 
+      element: <Navigate to="/home" replace />,
+    },
   ])
   if (!isReady) {
     return <div className="flex items-center justify-center min-h-screen">Carregando...</div>
@@ -124,3 +129,4 @@ const App = () => {
 }
 
 export default App
+

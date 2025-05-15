@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
-import { User, Settings, Camera, Trash2, Mail, Lock, Save, HelpCircle, Calendar, Phone, Clock } from "lucide-react";
 import Avatar from "../../assets/avatar.png";
+import { User, Gear, Camera, Trash, EnvelopeSimple, Lock, FloppyDisk, Info, CalendarBlank, Phone, Clock } from "@phosphor-icons/react";
 
 function Configuracoes() {
   const [nome, setNome] = useState("");
@@ -31,7 +31,7 @@ function Configuracoes() {
 
   const menuItems = [
     { id: "perfil", icon: <User size={18} />, label: "Perfil" },
-    { id: "ajuda", icon: <HelpCircle size={18} />, label: "Ajuda" }
+    { id: "ajuda", icon: <Info size={18} />, label: "Ajuda" }
   ];
 
   const duvidasFrequentes = [
@@ -56,7 +56,7 @@ function Configuracoes() {
           {/* Cabeçalho */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div className="flex items-center mb-4 md:mb-0">
-              <Settings className="text-blue-600 w-8 h-8 mr-3" />
+              <Gear className="text-blue-600 w-8 h-8 mr-3" />
               <h1 className="text-3xl font-bold text-gray-800">Configurações</h1>
             </div>
             
@@ -130,7 +130,7 @@ function Configuracoes() {
                             type="button"
                             className="text-red-500 border border-gray-300 hover:bg-gray-100 font-medium px-5 py-2.5 rounded-xl shadow-sm transition-colors flex items-center gap-2"
                           >
-                            <Trash2 size={16} />
+                            <Trash size={16} />
                             Deletar Foto
                           </button>
                         </div>
@@ -166,7 +166,7 @@ function Configuracoes() {
                           </label>
                           <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <Mail size={16} className="text-gray-400" />
+                              <EnvelopeSimple size={16} className="text-gray-400" />
                             </div>
                             <input
                               id="email"
@@ -238,7 +238,7 @@ function Configuracoes() {
                           type="submit"
                           className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2"
                         >
-                          <Save size={18} />
+                          <FloppyDisk size={18} />
                           Salvar Alterações
                         </button>
                       </div>
@@ -255,7 +255,7 @@ function Configuracoes() {
 
                     <div className="bg-blue-50 p-6 rounded-xl mb-8 flex items-start border border-blue-200">
                       <div className="flex-shrink-0 bg-blue-100 p-3 rounded-full mr-4">
-                        <HelpCircle size={24} className="text-blue-600" />
+                        <Info size={24} className="text-blue-600" />
                       </div>
                       <div>
                         <h3 className="font-medium text-blue-800 mb-2">Precisando de ajuda?</h3>
@@ -274,11 +274,11 @@ function Configuracoes() {
                         >
                           <div className="bg-gray-50 px-6 py-4 flex items-center">
                             <span className="flex items-center justify-center bg-blue-100 text-blue-600 w-8 h-8 rounded-full mr-3 flex-shrink-0">
-                              {index === 0 && <Calendar size={16} />}
+                              {index === 0 && <CalendarBlank size={16} />}
                               {index === 1 && <Clock size={16} />}
-                              {index === 2 && <Calendar size={16} />}
+                              {index === 2 && <CalendarBlank size={16} />}
                               {index === 3 && <User size={16} />}
-                              {index === 4 && <Calendar size={16} />}
+                              {index === 4 && <CalendarBlank size={16} />}
                             </span>
                             <h4 className="font-medium text-gray-800">{duvida.pergunta}</h4>
                           </div>

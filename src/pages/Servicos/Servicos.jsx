@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
 import ServicoItem from "../../components/ServicoItem";
 import axios from "axios";
+import { useAuth } from "../../context/auth"
 
 function Servicos() {
     const [busca, setBusca] = useState("");
@@ -11,6 +12,8 @@ function Servicos() {
     const [servicos, setServicos] = useState([]);  // Armazena os serviços
     const [erro, setErro] = useState(null); // Armazena erros da API
     const navigate = useNavigate();
+
+    const { tipo } = useAuth()
 
     // Carregar serviços de forma dinâmica (simulando o futuro backend)
     useEffect(() => {
@@ -50,95 +53,104 @@ function Servicos() {
         navigate("/home"); // Ou para a página inicial que você preferir
     };
 
-    return (
-        <LayoutPrincipal>
-            <div className="w-full h-full flex flex-col">
-                <div className="flex-grow px-4 md:px-12 py-10">
-                    {/* Barra de navegação */}
-                    <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-3xl font-bold text-sky-600">Serviços Disponíveis</h2>
-                        <input
-                            type="text"
-                            placeholder="Buscar procedimento"
-                            value={busca}
-                            onChange={(e) => setBusca(e.target.value)}
-                            className="w-full md:w-1/3 p-2 border border-gray-300 rounded"
-                        />
-                    </div>
-
-                    {/* Exibição de erro */}
-                    {erro && (
-                        <div className="bg-red-200 text-red-700 p-3 mb-4 rounded-md">
-                            {erro}
+    if (tipo == "paciente") {
+        return (
+            <LayoutPrincipal>
+                <div className="w-full h-full flex flex-col">
+                    <div className="flex-grow px-4 md:px-12 py-10">
+                        {/* Barra de navegação */}
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-3xl font-bold text-sky-600">Serviços Disponíveis</h2>
+                            <input
+                                type="text"
+                                placeholder="Buscar procedimento"
+                                value={busca}
+                                onChange={(e) => setBusca(e.target.value)}
+                                className="w-full md:w-1/3 p-2 border border-gray-300 rounded"
+                            />
                         </div>
-                    )}
-
-                    {/* Tabela de serviços */}
-                    <div className="overflow-x-auto mb-8">
-                        <table className="w-full table-auto text-left">
-                            <thead>
-                                <tr className="bg-gray-100 text-gray-700">
-                                    <th className="py-2 px-4">Código</th>
-                                    <th className="py-2 px-4">Nome do Procedimento</th>
-                                    <th className="py-2 px-4">Descrição</th>
-                                    <th className="py-2 px-4">Ação</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {servicosNaPagina.length > 0 ? (
-                                    servicosNaPagina.map((servico) => (
-                                        <ServicoItem
-                                            key={servico.id}
-                                            codigo={servico.id}
-                                            nome={servico.nome}
-                                            descricao={servico.descricao}
-                                            icone={servico.icone}
-                                            onAgendar={() => handleAgendar(servico.id)}  // Chama a função de navegação
-                                        />
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="4" className="text-center py-4 text-gray-500">
-                                            Nenhum serviço encontrado
-                                        </td>
+    
+                        {/* Exibição de erro */}
+                        {erro && (
+                            <div className="bg-red-200 text-red-700 p-3 mb-4 rounded-md">
+                                {erro}
+                            </div>
+                        )}
+    
+                        {/* Tabela de serviços */}
+                        <div className="overflow-x-auto mb-8">
+                            <table className="w-full table-auto text-left">
+                                <thead>
+                                    <tr className="bg-gray-100 text-gray-700">
+                                        <th className="py-2 px-4">Código</th>
+                                        <th className="py-2 px-4">Nome do Procedimento</th>
+                                        <th className="py-2 px-4">Descrição</th>
+                                        <th className="py-2 px-4">Ação</th>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {/* Paginação */}
-                    <div className="mt-6 flex justify-center space-x-2">
-                        <button
-                            onClick={() => handlePagina(paginaAtual - 1)}
-                            disabled={paginaAtual === 1}
-                            className="w-8 h-8 bg-gray-200 text-black rounded"
-                        >
-                            &lt;
-                        </button>
-
-                        {Array.from({ length: Math.ceil(servicosFiltrados.length / itensPorPagina) }, (_, i) => (
+                                </thead>
+                                <tbody>
+                                    {servicosNaPagina.length > 0 ? (
+                                        servicosNaPagina.map((servico) => (
+                                            <ServicoItem
+                                                key={servico.id}
+                                                codigo={servico.id}
+                                                nome={servico.nome}
+                                                descricao={servico.descricao}
+                                                icone={servico.icone}
+                                                onAgendar={() => handleAgendar(servico.id)}  // Chama a função de navegação
+                                            />
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="4" className="text-center py-4 text-gray-500">
+                                                Nenhum serviço encontrado
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+    
+                        {/* Paginação */}
+                        <div className="mt-6 flex justify-center space-x-2">
                             <button
-                                key={i}
-                                onClick={() => handlePagina(i + 1)}
-                                className={`w-8 h-8 rounded ${paginaAtual === i + 1 ? 'bg-black text-white' : 'bg-gray-200'}`}
+                                onClick={() => handlePagina(paginaAtual - 1)}
+                                disabled={paginaAtual === 1}
+                                className="w-8 h-8 bg-gray-200 text-black rounded"
                             >
-                                {i + 1}
+                                &lt;
                             </button>
-                        ))}
-
-                        <button
-                            onClick={() => handlePagina(paginaAtual + 1)}
-                            disabled={paginaAtual === Math.ceil(servicosFiltrados.length / itensPorPagina)}
-                            className="w-8 h-8 bg-gray-200 text-black rounded"
-                        >
-                            &gt;
-                        </button>
+    
+                            {Array.from({ length: Math.ceil(servicosFiltrados.length / itensPorPagina) }, (_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => handlePagina(i + 1)}
+                                    className={`w-8 h-8 rounded ${paginaAtual === i + 1 ? 'bg-black text-white' : 'bg-gray-200'}`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+    
+                            <button
+                                onClick={() => handlePagina(paginaAtual + 1)}
+                                disabled={paginaAtual === Math.ceil(servicosFiltrados.length / itensPorPagina)}
+                                className="w-8 h-8 bg-gray-200 text-black rounded"
+                            >
+                                &gt;
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </LayoutPrincipal>
-    );
+            </LayoutPrincipal>
+        );
+    } else {
+        return (
+            <LayoutPrincipal>
+                <p>[ajustando para perfil dentista]</p>
+            </LayoutPrincipal>
+        )
+    }
+
 }
 
 export default Servicos;

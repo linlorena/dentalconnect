@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
-import { Calendar, Clock, User, CheckCircle } from "lucide-react";
+import { CalendarBlank, Clock, User, CheckCircle } from "@phosphor-icons/react";
 
 function Consultas() {
   const [dentistas, setDentistas] = useState([]);
@@ -108,7 +108,7 @@ function Consultas() {
           {/* Seleção de horário */}
           <div className="bg-gray-50 rounded-lg p-6 shadow-sm">
             <div className="flex items-center mb-4 text-teal-600">
-              <Calendar size={20} className="mr-2" />
+              <CalendarBlank size={20} className="mr-2" />
               <h3 className="text-lg font-semibold">Escolha o Horário</h3>
             </div>
             

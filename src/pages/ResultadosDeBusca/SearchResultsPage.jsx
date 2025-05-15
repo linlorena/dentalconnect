@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import DentistCard from "../../components/DentistCard"
 import { useAuth } from "../../context/auth"
-import { ArrowLeft } from "lucide-react"
+import { ArrowCircleLeft } from "@phosphor-icons/react"
 
 function useQuery() {
   return new URLSearchParams(useLocation().search)
@@ -80,7 +80,7 @@ function SearchResultsPage() {
             className="flex items-center justify-center p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-600 transition-colors duration-300"
             aria-label="Voltar"
           >
-            <ArrowLeft size={24} />
+            <ArrowCircleLeft size={24} />
           </button>
           <h2 className="text-3xl font-bold text-sky-600">Resultados da Pesquisa</h2>
         </div>

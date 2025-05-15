@@ -18,6 +18,8 @@ export const AuthProvider = ({ children }) => {
   })
   const [tipo, setTipo] = useState(localStorage.getItem("tipo") || null)
   const [nome, setNome] = useState(localStorage.getItem("nome") || null)
+  const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || null)
+
   const [loading, setLoading] = useState(true)
   const [redirectPath, setRedirectPath] = useState(null)
 
@@ -29,21 +31,25 @@ export const AuthProvider = ({ children }) => {
         const storedUser = localStorage.getItem("user")
         const storedTipo = localStorage.getItem("tipo")
         const storedNome = localStorage.getItem("nome")
+        const storedAvatar = localStorage.getItem("avatar")
 
         if (storedToken && storedUser && storedTipo) {
           setToken(storedToken)
           setUser(JSON.parse(storedUser))
           setTipo(storedTipo)
           setNome(storedNome)
+          setAvatar(storedAvatar)
         } else {
           localStorage.removeItem("token")
           localStorage.removeItem("user")
           localStorage.removeItem("tipo")
           localStorage.removeItem("nome")
+          localStorage.removeItem("avatar")
           setToken(null)
           setUser(null)
           setTipo(null)
           setNome(null)
+          setAvatar(null)
         }
       } catch (error) {
         console.error("Erro ao inicializar autenticação:", error)
@@ -52,10 +58,12 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("user")
         localStorage.removeItem("tipo")
         localStorage.removeItem("nome")
+        localStorage.removeItem("avatar")
         setToken(null)
         setUser(null)
         setTipo(null)
         setNome(null)
+        setAvatar(null)
       } finally {
         setLoading(false)
       }
@@ -84,12 +92,14 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("user", JSON.stringify(response.data.user))
       localStorage.setItem("tipo", response.data.tipo)
       localStorage.setItem("nome", response.data.nome)
+      localStorage.setItem("avatar", response.data.avatar)
 
       // Atualizar o estado
       setToken(response.data.token)
       setUser(response.data.user)
       setTipo(response.data.tipo)
       setNome(response.data.nome)
+      setAvatar(response.data.avatar)
 
       const path = response.data.tipo === "dentista" ? "/dentista" : "/home"
       setRedirectPath(path)
@@ -112,11 +122,13 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user")
     localStorage.removeItem("tipo")
     localStorage.removeItem("nome")
+    localStorage.removeItem("avatar")
 
     setToken(null)
     setUser(null)
     setTipo(null)
     setNome(null)
+    setAvatar(null)
     setRedirectPath(null)
 
     window.location.href = "/"
@@ -130,6 +142,7 @@ export const AuthProvider = ({ children }) => {
         token,
         tipo,
         nome,
+        avatar,
         login,
         logout,
         loading,

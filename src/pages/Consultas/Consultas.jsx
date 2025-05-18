@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
-import { CalendarBlank, Clock, User, CheckCircle } from "@phosphor-icons/react";
+import { Calendar, Clock, User, CheckCircle } from "lucide-react";
+import api from "../../services/api";
 
 function Consultas() {
   const [dentistas, setDentistas] = useState([]);
@@ -15,10 +15,29 @@ function Consultas() {
 
   useEffect(() => {
     setCarregando(true);
-    axios
-      .get("http://localhost:3001/api/dentistas")
+    api.get("/dentists")
       .then((response) => {
-        setDentistas(response.data);
+        console.log("Dados recebidos do backend:", response.data);
+        const dentistasComHorarios = response.data.map(dentista => {
+          console.log("Processando dentista no frontend:", dentista);
+          return {
+            ...dentista,
+            horarios: dentista.horarios || [
+              { dia: "Segunda-feira", hora: "09:00" },
+              { dia: "Segunda-feira", hora: "14:00" },
+              { dia: "Terça-feira", hora: "09:00" },
+              { dia: "Terça-feira", hora: "14:00" },
+              { dia: "Quarta-feira", hora: "09:00" },
+              { dia: "Quarta-feira", hora: "14:00" },
+              { dia: "Quinta-feira", hora: "09:00" },
+              { dia: "Quinta-feira", hora: "14:00" },
+              { dia: "Sexta-feira", hora: "09:00" },
+              { dia: "Sexta-feira", hora: "14:00" }
+            ]
+          };
+        });
+        console.log("Dentistas processados no frontend:", dentistasComHorarios);
+        setDentistas(dentistasComHorarios);
         setCarregando(false);
       })
       .catch((error) => {
@@ -34,17 +53,15 @@ function Consultas() {
     }
 
     setCarregando(true);
-    // Enviar dados para marcar consulta
-    axios
-      .post("http://localhost:3001/api/marcar-consulta", {
-        pacienteId,
-        dentistaId: dentistaSelecionado.id,
-        dataHora: horarioSelecionado,
-      })
+    api.post("/marcar-consulta", {
+      pacienteId,
+      dentistaId: dentistaSelecionado.id,
+      dataHora: horarioSelecionado,
+    })
       .then((response) => {
         setMensagemConfirmacao(response.data.mensagem);
         setTimeout(() => {
-          navigate("/agendamentos"); // Redireciona para a página de agendamentos
+          navigate("/agendamentos");
         }, 2000);
       })
       .catch((error) => {
@@ -88,7 +105,7 @@ function Consultas() {
                 <option value="">Escolha um dentista</option>
                 {dentistas.map((dentista) => (
                   <option key={dentista.id} value={dentista.id}>
-                    Dr(a). {dentista.nome} - {dentista.especialidade}
+                    Dr(a). {dentista.nome || "Sem nome"} {dentista.especialidades && dentista.especialidades.length > 0 ? `- ${dentista.especialidades.join(", ")}` : ""}
                   </option>
                 ))}
               </select>
@@ -96,8 +113,10 @@ function Consultas() {
 
             {dentistaSelecionado && (
               <div className="mt-4 p-4 bg-teal-50 rounded-md border border-teal-100">
-                <h4 className="font-semibold text-teal-700">Dr(a). {dentistaSelecionado.nome}</h4>
-                <p className="text-sm text-gray-600">{dentistaSelecionado.especialidade}</p>
+                <h4 className="font-semibold text-teal-700">Dr(a). {dentistaSelecionado.nome || "Sem nome"}</h4>
+                {dentistaSelecionado.especialidade && (
+                  <p className="text-sm text-gray-600">{dentistaSelecionado.especialidade}</p>
+                )}
                 {dentistaSelecionado.descricao && (
                   <p className="text-sm mt-2">{dentistaSelecionado.descricao}</p>
                 )}
@@ -108,7 +127,7 @@ function Consultas() {
           {/* Seleção de horário */}
           <div className="bg-gray-50 rounded-lg p-6 shadow-sm">
             <div className="flex items-center mb-4 text-teal-600">
-              <CalendarBlank size={20} className="mr-2" />
+              <Calendar size={20} className="mr-2" />
               <h3 className="text-lg font-semibold">Escolha o Horário</h3>
             </div>
             
@@ -120,7 +139,7 @@ function Consultas() {
                   value={horarioSelecionado || ""}
                 >
                   <option value="">Selecione um horário disponível</option>
-                  {dentistaSelecionado.horarios.map((horario, index) => (
+                  {(dentistaSelecionado.horarios || []).map((horario, index) => (
                     <option key={index} value={`${horario.dia} - ${horario.hora}`}>
                       {horario.dia} - {horario.hora}
                     </option>
@@ -150,11 +169,11 @@ function Consultas() {
             <ul className="space-y-2">
               <li className="flex items-start">
                 <span className="font-medium w-24">Dentista:</span>
-                <span>{dentistaSelecionado ? `Dr(a). ${dentistaSelecionado.nome}` : "Nenhum selecionado"}</span>
+                <span>{dentistaSelecionado ? `Dr(a). ${dentistaSelecionado.nome || "Sem nome"}` : "Nenhum selecionado"}</span>
               </li>
               <li className="flex items-start">
                 <span className="font-medium w-24">Especialidade:</span>
-                <span>{dentistaSelecionado ? dentistaSelecionado.especialidade : "N/A"}</span>
+                <span>{dentistaSelecionado?.especialidade || "N/A"}</span>
               </li>
               <li className="flex items-start">
                 <span className="font-medium w-24">Horário:</span>

@@ -28,14 +28,55 @@ function MeusAgendamentos() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error("Token não encontrado");
+          return;
+        }
+
+        const headers = {
+          Authorization: `Bearer ${token}`
+        };
+
         const [agendamentosRes, locaisRes] = await Promise.all([
-          axios.get("http://localhost:3001/api/consultation"),
-          axios.get("http://localhost:3001/api/locals")
+          axios.get("http://localhost:3001/api/consultation", { headers }),
+          axios.get("http://localhost:3001/api/locals", { headers })
         ]);
-        setAgendamentos(agendamentosRes.data);
+
+        // Busca os nomes dos dentistas para cada agendamento
+        const agendamentosComDentistas = await Promise.all(
+          agendamentosRes.data.map(async (agendamento) => {
+            try {
+              const dentistaRes = await axios.get(`http://localhost:3001/api/dentists/${agendamento.dentista}`, { headers });
+              return {
+                ...agendamento,
+                dentista_nome: dentistaRes.data.usuario?.nome || "Dentista não encontrado"
+              };
+            } catch (error) {
+              console.error("Erro ao buscar dados do dentista:", error);
+              if (error.response?.status === 401) {
+                // Token expirado ou inválido
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+                return null;
+              }
+              return {
+                ...agendamento,
+                dentista_nome: "Dentista não encontrado"
+              };
+            }
+          })
+        );
+
+        setAgendamentos(agendamentosComDentistas.filter(Boolean));
         setLocais(locaisRes.data);
       } catch (error) {
-        console.error("Erro ao buscar dados.", error);
+        console.error("Erro ao buscar dados:", error);
+        if (error.response?.status === 401) {
+          // Token expirado ou inválido
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+        }
       }
     };
     fetchData();
@@ -188,8 +229,7 @@ function MeusAgendamentos() {
                 <div className="flex items-center gap-2 mt-2">
                   <User size={18} className="text-gray-500" />
                   <p className="text-sm text-gray-600 truncate">
-                    {/* Substitua por agendamento.dentista_nome quando disponível */}
-                    Dr. Nome do Dentista
+                    Dr(a). {agendamento.dentista_nome}
                   </p>
                 </div>
               </div>
@@ -216,8 +256,7 @@ function MeusAgendamentos() {
                     </div>
                     <div>
                       <p className="font-semibold text-gray-800">
-                        {/* Substitua por agendamentoSelecionado.agendamento.dentista_nome quando disponível */}
-                        Dr. Nome do Dentista
+                        Dr(a). {agendamentoSelecionado.agendamento.dentista_nome}
                       </p>
                       <p className="text-sm text-gray-500">
                         CRO {/* {agendamentoSelecionado.agendamento.dentista_cro} */} 12345

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
 import { CalendarBlank, Clock, User, CheckCircle } from "@phosphor-icons/react";
+import { useAuth } from "../../context/auth";
 
 function Consultas() {
   const [dentistas, setDentistas] = useState([]);
@@ -12,11 +13,45 @@ function Consultas() {
   const [pacienteId] = useState(1); // ID do paciente (simulado, pode pegar do contexto)
   const [carregando, setCarregando] = useState(false);
   const navigate = useNavigate();
+  const { token } = useAuth();
+
+  // Função para converter dia da semana em data
+  const getDateFromDayOfWeek = (dayOfWeek) => {
+    const days = {
+      "Segunda-feira": 1,
+      "Terça-feira": 2,
+      "Quarta-feira": 3,
+      "Quinta-feira": 4,
+      "Sexta-feira": 5,
+      "Sábado": 6,
+      "Domingo": 0
+    };
+
+    const today = new Date();
+    const currentDay = today.getDay();
+    const targetDay = days[dayOfWeek];
+    
+    // Calcula quantos dias precisamos adicionar para chegar ao dia desejado
+    let daysToAdd = targetDay - currentDay;
+    if (daysToAdd <= 0) {
+      daysToAdd += 7; // Se o dia já passou, agenda para a próxima semana
+    }
+    
+    const targetDate = new Date(today);
+    targetDate.setDate(today.getDate() + daysToAdd);
+    
+    // Formata a data para YYYY-MM-DD
+    return targetDate.toISOString().split('T')[0];
+  };
 
   useEffect(() => {
     setCarregando(true);
+    const headers = {
+      Authorization: `Bearer ${token}`
+    };
+
     axios
-      .get("http://localhost:3001/api/dentistas")
+      .get("http://localhost:3001/api/users?tipo=dentista", { headers })
       .then((response) => {
         setDentistas(response.data);
         setCarregando(false);
@@ -25,7 +60,7 @@ function Consultas() {
         console.error("Erro ao buscar dentistas:", error);
         setCarregando(false);
       });
-  }, []);
+  }, [token]);
 
   const handleMarcarConsulta = () => {
     if (!dentistaSelecionado || !horarioSelecionado) {
@@ -33,18 +68,32 @@ function Consultas() {
       return;
     }
 
+    const [dia, hora] = horarioSelecionado.split(" - ");
+    const data = getDateFromDayOfWeek(dia);
+    const headers = {
+      Authorization: `Bearer ${token}`
+    };
+
     setCarregando(true);
-    // Enviar dados para marcar consulta
+    // Primeiro busca o ID do dentista na tabela dentista
     axios
-      .post("http://localhost:3001/api/marcar-consulta", {
-        pacienteId,
-        dentistaId: dentistaSelecionado.id,
-        dataHora: horarioSelecionado,
+      .get(`http://localhost:3001/api/dentists/usuario/${dentistaSelecionado.id}`, { headers })
+      .then((dentistaResponse) => {
+        // Depois cria a consulta com o ID correto
+        return axios.post("http://localhost:3001/api/consultation", {
+          data: data,
+          horario: hora,
+          paciente: pacienteId,
+          dentista: dentistaResponse.data.id,
+          local: 1,
+          status: "Confirmado",
+          servico: 1
+        }, { headers });
       })
       .then((response) => {
-        setMensagemConfirmacao(response.data.mensagem);
+        setMensagemConfirmacao(response.data.message);
         setTimeout(() => {
-          navigate("/agendamentos"); // Redireciona para a página de agendamentos
+          navigate("/agendamentos");
         }, 2000);
       })
       .catch((error) => {
@@ -80,6 +129,17 @@ function Consultas() {
                   const dentista = dentistas.find(
                     (dentista) => dentista.id === parseInt(e.target.value)
                   );
+                  // Adiciona horários fictícios ao dentista selecionado
+                  if (dentista) {
+                    dentista.horarios = [
+                      { dia: "Segunda-feira", hora: "09:00" },
+                      { dia: "Segunda-feira", hora: "10:00" },
+                      { dia: "Terça-feira", hora: "14:00" },
+                      { dia: "Terça-feira", hora: "15:00" },
+                      { dia: "Quarta-feira", hora: "09:00" },
+                      { dia: "Quarta-feira", hora: "10:00" }
+                    ];
+                  }
                   setDentistaSelecionado(dentista);
                   setHorarioSelecionado(null);
                 }}
@@ -88,7 +148,7 @@ function Consultas() {
                 <option value="">Escolha um dentista</option>
                 {dentistas.map((dentista) => (
                   <option key={dentista.id} value={dentista.id}>
-                    Dr(a). {dentista.nome} - {dentista.especialidade}
+                    Dr(a). {dentista.nome}
                   </option>
                 ))}
               </select>
@@ -97,7 +157,6 @@ function Consultas() {
             {dentistaSelecionado && (
               <div className="mt-4 p-4 bg-teal-50 rounded-md border border-teal-100">
                 <h4 className="font-semibold text-teal-700">Dr(a). {dentistaSelecionado.nome}</h4>
-                <p className="text-sm text-gray-600">{dentistaSelecionado.especialidade}</p>
                 {dentistaSelecionado.descricao && (
                   <p className="text-sm mt-2">{dentistaSelecionado.descricao}</p>
                 )}
@@ -151,10 +210,6 @@ function Consultas() {
               <li className="flex items-start">
                 <span className="font-medium w-24">Dentista:</span>
                 <span>{dentistaSelecionado ? `Dr(a). ${dentistaSelecionado.nome}` : "Nenhum selecionado"}</span>
-              </li>
-              <li className="flex items-start">
-                <span className="font-medium w-24">Especialidade:</span>
-                <span>{dentistaSelecionado ? dentistaSelecionado.especialidade : "N/A"}</span>
               </li>
               <li className="flex items-start">
                 <span className="font-medium w-24">Horário:</span>

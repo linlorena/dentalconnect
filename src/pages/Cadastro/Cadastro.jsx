@@ -71,8 +71,7 @@ function Cadastro() {
           cpf,
           telefone,
           cidade: cidadeSelecionada,
-          estado: estadoSelecionado,
-          cro: tipoUsuario === "dentista" ? cro : null
+          estado: estadoSelecionado
         };
         try {
           const resp = await fetch("http://localhost:3001/api/users", {
@@ -123,7 +122,6 @@ function Cadastro() {
                             </div>
                             <div className="grid grid-cols-2 gap-4 w-full mt-4">
                                 <input type="tel" placeholder="Telefone" value={telefone} onChange={handleTelefoneChange} maxLength={15} className="p-3 focus:shadow-gray-200 focus:shadow-md rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
-                                {tipoUsuario === "dentista" && <input type="text" placeholder="CRO" className="p-3 rounded-lg focus:shadow-gray-200 focus:shadow-md bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />}
                             </div>
                             <div className="grid grid-cols-2 gap-4 w-full mt-4">
                             <div className="relative w-full">

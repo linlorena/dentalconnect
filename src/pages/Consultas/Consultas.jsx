@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
 import { CalendarBlank, Clock, User, CheckCircle } from "@phosphor-icons/react";
 import { useAuth } from "../../context/auth";
@@ -12,8 +12,63 @@ function Consultas() {
   const [mensagemConfirmacao, setMensagemConfirmacao] = useState("");
   const [pacienteId] = useState(1); // ID do paciente (simulado, pode pegar do contexto)
   const [carregando, setCarregando] = useState(false);
+  const [procedimentoSelecionado, setProcedimentoSelecionado] = useState(null);
+  const [localSelecionado, setLocalSelecionado] = useState(null);
+  const [procedimentoInfo, setProcedimentoInfo] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { token } = useAuth();
+
+  useEffect(() => {
+    // Extrair parâmetros da URL
+    const searchParams = new URLSearchParams(location.search);
+    const localId = searchParams.get('local');
+    const procedimentoId = searchParams.get('procedimento');
+
+    setCarregando(true);
+    const headers = {
+      Authorization: `Bearer ${token}`
+    };
+
+    // Se tiver localId, busca dentistas daquele local
+    if (localId) {
+      setLocalSelecionado(localId);
+      axios
+        .get(`http://localhost:3001/api/dentists/local/${localId}`, { headers })
+        .then((response) => {
+          setDentistas(response.data);
+          setCarregando(false);
+        })
+        .catch((error) => {
+          console.error("Erro ao buscar dentistas:", error);
+          setCarregando(false);
+        });
+    } else {
+      // Se não tiver localId, busca todos os dentistas
+      axios
+        .get("http://localhost:3001/api/dentists", { headers })
+        .then((response) => {
+          setDentistas(response.data);
+          setCarregando(false);
+        })
+        .catch((error) => {
+          console.error("Erro ao buscar dentistas:", error);
+          setCarregando(false);
+        });
+    }
+
+    // Se tiver procedimentoId, busca informações do procedimento
+    if (procedimentoId) {
+      setProcedimentoSelecionado(procedimentoId);
+      axios.get(`http://localhost:3001/api/services/${procedimentoId}`)
+        .then(response => {
+          setProcedimentoInfo(response.data);
+        })
+        .catch(error => {
+          console.error("Erro ao buscar informações do procedimento:", error);
+        });
+    }
+  }, [location, token]);
 
   // Função para converter dia da semana em data
   const getDateFromDayOfWeek = (dayOfWeek) => {
@@ -44,24 +99,6 @@ function Consultas() {
     return targetDate.toISOString().split('T')[0];
   };
 
-  useEffect(() => {
-    setCarregando(true);
-    const headers = {
-      Authorization: `Bearer ${token}`
-    };
-
-    axios
-      .get("http://localhost:3001/api/users?tipo=dentista", { headers })
-      .then((response) => {
-        setDentistas(response.data);
-        setCarregando(false);
-      })
-      .catch((error) => {
-        console.error("Erro ao buscar dentistas:", error);
-        setCarregando(false);
-      });
-  }, [token]);
-
   const handleMarcarConsulta = () => {
     if (!dentistaSelecionado || !horarioSelecionado) {
       alert("Por favor, selecione o dentista e o horário.");
@@ -75,21 +112,16 @@ function Consultas() {
     };
 
     setCarregando(true);
-    // Primeiro busca o ID do dentista na tabela dentista
-    axios
-      .get(`http://localhost:3001/api/dentists/usuario/${dentistaSelecionado.id}`, { headers })
-      .then((dentistaResponse) => {
-        // Depois cria a consulta com o ID correto
-        return axios.post("http://localhost:3001/api/consultation", {
-          data: data,
-          horario: hora,
-          paciente: pacienteId,
-          dentista: dentistaResponse.data.id,
-          local: 1,
-          status: "Confirmado",
-          servico: 1
-        }, { headers });
-      })
+    // Cria a consulta diretamente com o ID do dentista
+    axios.post("http://localhost:3001/api/consultation", {
+      data: data,
+      horario: hora,
+      paciente: pacienteId,
+      dentista: dentistaSelecionado.id,
+      local: localSelecionado || 1, // Usa o local selecionado ou 1 como fallback
+      status: "Confirmado",
+      servico: procedimentoSelecionado || 1 // Usa o procedimento selecionado ou 1 como fallback
+    }, { headers })
       .then((response) => {
         setMensagemConfirmacao(response.data.message);
         setTimeout(() => {
@@ -157,9 +189,6 @@ function Consultas() {
             {dentistaSelecionado && (
               <div className="mt-4 p-4 bg-teal-50 rounded-md border border-teal-100">
                 <h4 className="font-semibold text-teal-700">Dr(a). {dentistaSelecionado.nome}</h4>
-                {dentistaSelecionado.descricao && (
-                  <p className="text-sm mt-2">{dentistaSelecionado.descricao}</p>
-                )}
               </div>
             )}
           </div>
@@ -215,6 +244,12 @@ function Consultas() {
                 <span className="font-medium w-24">Horário:</span>
                 <span>{horarioSelecionado || "Nenhum selecionado"}</span>
               </li>
+              {procedimentoInfo && (
+                <li className="flex items-start">
+                  <span className="font-medium w-24">Procedimento:</span>
+                  <span>{procedimentoInfo.nome}</span>
+                </li>
+              )}
             </ul>
           </div>
 

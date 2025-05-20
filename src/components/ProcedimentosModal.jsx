@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { ArrowLeft, X, MapPin, Stethoscope } from "@phosphor-icons/react"
+import { useNavigate } from "react-router-dom"
 
 function ProcedimentosModal({ local, onClose }) {
   const [procedimentos, setProcedimentos] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchProcedimentos = async () => {
@@ -39,7 +41,8 @@ function ProcedimentosModal({ local, onClose }) {
   }, [local.id])
 
   const handleAgendarProcedimento = (procedimentoId) => {
-    console.log(`Agendar procedimento ${procedimentoId} na clínica ${local.id}`)
+    navigate(`/consultas?local=${local.id}&procedimento=${procedimentoId}`)
+    onClose()
   }
 
   return (

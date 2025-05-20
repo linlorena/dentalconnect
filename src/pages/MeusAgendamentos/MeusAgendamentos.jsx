@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
 import AvatarDefault from "../../assets/avatar.png";
-import { MapPin, X, Calendar, Clock, User, CheckCircle } from "@phosphor-icons/react";
+import { MapPin, X, Calendar, Clock, User, CheckCircle, Stethoscope } from "@phosphor-icons/react";
 import axios from "axios";
 import dayjs from "dayjs";
 import 'dayjs/locale/pt-br';
@@ -13,7 +13,7 @@ function MeusAgendamentos() {
   const [agendamentos, setAgendamentos] = useState([]);
   const [locais, setLocais] = useState([]);
   const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null);
-  const [filtroStatus, setFiltroStatus] = useState("Todos");
+  const [mesSelecionado, setMesSelecionado] = useState(dayjs().format('YYYY-MM'));
 
   const { nome, avatar } = useAuth()
 
@@ -24,6 +24,22 @@ function MeusAgendamentos() {
   }
 
   const nomeFormatado = formatarNome(nome)
+
+  // Gera a lista de meses para o seletor (6 meses atrás até 6 meses à frente)
+  const gerarOpcoesMeses = () => {
+    const meses = [];
+    const hoje = dayjs();
+    
+    for (let i = -6; i <= 6; i++) {
+      const mes = hoje.add(i, 'month');
+      meses.push({
+        value: mes.format('YYYY-MM'),
+        label: mes.format('MMMM [de] YYYY')
+      });
+    }
+    
+    return meses;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,37 +59,46 @@ function MeusAgendamentos() {
           axios.get("http://localhost:3001/api/locals", { headers })
         ]);
 
-        // Busca os nomes dos dentistas para cada agendamento
-        const agendamentosComDentistas = await Promise.all(
+        // Busca os nomes dos dentistas e informações dos procedimentos para cada agendamento
+        const agendamentosComDados = await Promise.all(
           agendamentosRes.data.map(async (agendamento) => {
             try {
+              // Busca apenas o nome do dentista
               const dentistaRes = await axios.get(`http://localhost:3001/api/dentists/${agendamento.dentista}`, { headers });
+              
+              // Se o agendamento tiver um serviço específico (diferente de 1), busca o procedimento
+              let procedimento_nome = "Consulta de Rotina";
+              if (agendamento.servico && agendamento.servico !== 1) {
+                const procedimentoRes = await axios.get(`http://localhost:3001/api/services/${agendamento.servico}`, { headers });
+                procedimento_nome = procedimentoRes.data.nome || "Procedimento não encontrado";
+              }
+              
               return {
                 ...agendamento,
-                dentista_nome: dentistaRes.data.usuario?.nome || "Dentista não encontrado"
+                dentista_nome: dentistaRes.data.usuario?.nome || "Dentista não encontrado",
+                procedimento_nome: procedimento_nome
               };
             } catch (error) {
-              console.error("Erro ao buscar dados do dentista:", error);
+              console.error("Erro ao buscar dados:", error);
               if (error.response?.status === 401) {
-                // Token expirado ou inválido
                 localStorage.removeItem('token');
                 window.location.href = '/login';
                 return null;
               }
               return {
                 ...agendamento,
-                dentista_nome: "Dentista não encontrado"
+                dentista_nome: "Dentista não encontrado",
+                procedimento_nome: "Consulta de Rotina"
               };
             }
           })
         );
 
-        setAgendamentos(agendamentosComDentistas.filter(Boolean));
+        setAgendamentos(agendamentosComDados.filter(Boolean));
         setLocais(locaisRes.data);
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
         if (error.response?.status === 401) {
-          // Token expirado ou inválido
           localStorage.removeItem('token');
           window.location.href = '/login';
         }
@@ -105,22 +130,11 @@ function MeusAgendamentos() {
     setModalAberto(false);
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "Pago":
-        return <CheckCircle className="mr-1" size={16} weight="fill" />;
-      case "Pendente":
-        return <Clock className="mr-1" size={16} weight="fill" />;
-      case "Cancelado":
-        return <X className="mr-1" size={16} weight="fill" />;
-      default:
-        return null;
-    }
-  };
-
-  const agendamentosFiltrados = filtroStatus === "Todos" 
-    ? agendamentos 
-    : agendamentos.filter(ag => ag.status === filtroStatus);
+  // Filtra os agendamentos pelo mês selecionado
+  const agendamentosFiltrados = agendamentos.filter(agendamento => {
+    const dataAgendamento = dayjs(agendamento.data);
+    return dataAgendamento.format('YYYY-MM') === mesSelecionado;
+  });
 
   return (
     <LayoutPrincipal>
@@ -131,19 +145,17 @@ function MeusAgendamentos() {
             Meus Agendamentos
           </h2>
           <div className="flex gap-2 bg-white p-2 rounded-xl shadow-sm">
-            {["Todos", "Pago", "Pendente", "Cancelado"].map(status => (
-              <button
-                key={status}
-                onClick={() => setFiltroStatus(status)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  filtroStatus === status 
-                    ? "bg-sky-600 text-white shadow-md" 
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                {status}
-              </button>
-            ))}
+            <select
+              value={mesSelecionado}
+              onChange={(e) => setMesSelecionado(e.target.value)}
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-sky-600 text-white shadow-md focus:outline-none focus:ring-2 focus:ring-sky-500"
+            >
+              {gerarOpcoesMeses().map((mes) => (
+                <option key={mes.value} value={mes.value}>
+                  {mes.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -161,7 +173,7 @@ function MeusAgendamentos() {
             <h2 className="text-2xl font-bold">{nomeFormatado}</h2>
             <p className="text-sm text-sky-100">Cadastrado em 31 de março de 2024</p>
             <p className="mt-1 text-sm bg-sky-800 bg-opacity-30 rounded-full px-3 py-1 inline-block">
-              {agendamentos.length} agendamento{agendamentos.length !== 1 ? 's' : ''}
+              {agendamentosFiltrados.length} agendamento{agendamentosFiltrados.length !== 1 ? 's' : ''}
             </p>
           </div>
         </div>
@@ -170,11 +182,9 @@ function MeusAgendamentos() {
         {agendamentosFiltrados.length === 0 && (
           <div className="bg-gray-50 rounded-2xl p-8 text-center shadow-sm border border-gray-200">
             <Calendar size={48} className="mx-auto text-gray-400 mb-3" />
-            <h3 className="text-xl font-medium text-gray-700">Nenhum agendamento {filtroStatus !== "Todos" ? `com status "${filtroStatus}"` : ""}</h3>
+            <h3 className="text-xl font-medium text-gray-700">Nenhum agendamento para {dayjs(mesSelecionado).format('MMMM [de] YYYY')}</h3>
             <p className="text-gray-500 mt-2">
-              {filtroStatus !== "Todos" 
-                ? "Tente selecionar outro filtro ou visualizar todos os agendamentos"
-                : "Você ainda não possui agendamentos cadastrados"}
+              Selecione outro mês para visualizar seus agendamentos
             </p>
           </div>
         )}
@@ -185,14 +195,6 @@ function MeusAgendamentos() {
             const dataFormatada = dayjs(agendamento.data).format("DD/MM");
             const diaSemana = dayjs(agendamento.data).format("dddd");
             const hora = agendamento.horario.slice(0, 5);
-            const status = agendamento.status;
-
-            const statusClasses = {
-              "Pago": "text-green-600 bg-green-100 border-green-200",
-              "Pendente": "text-yellow-700 bg-yellow-100 border-yellow-200",
-              "Cancelado": "text-red-600 bg-red-100 border-red-200"
-            };
-            const statusStyle = statusClasses[status] || "text-gray-600 bg-gray-100 border-gray-200";
             
             const isSelected = agendamentoSelecionado && agendamentoSelecionado.agendamento.id === agendamento.id;
 
@@ -208,9 +210,9 @@ function MeusAgendamentos() {
                     <p className="text-2xl font-bold text-sky-700">{dataFormatada}</p>
                     <p className="text-xs font-medium text-sky-500 capitalize -mt-1">{diaSemana}</p>
                   </div>
-                  <span className={`flex items-center px-3 py-1 text-sm rounded-full font-medium border ${statusStyle}`}>
-                    {getStatusIcon(status)}
-                    {status}
+                  <span className="flex items-center px-3 py-1 text-sm rounded-full font-medium border text-green-600 bg-green-100 border-green-200">
+                    <CheckCircle className="mr-1" size={16} weight="fill" />
+                    Confirmado
                   </span>
                 </div>
                 
@@ -230,6 +232,13 @@ function MeusAgendamentos() {
                   <User size={18} className="text-gray-500" />
                   <p className="text-sm text-gray-600 truncate">
                     Dr(a). {agendamento.dentista_nome}
+                  </p>
+                </div>
+                
+                <div className="flex items-center gap-2 mt-2">
+                  <Stethoscope size={18} className="text-gray-500" />
+                  <p className="text-sm text-gray-600 truncate">
+                    {agendamento.servico && agendamento.procedimento_nome ? agendamento.procedimento_nome : "Consulta de Rotina"}
                   </p>
                 </div>
               </div>
@@ -260,6 +269,20 @@ function MeusAgendamentos() {
                       </p>
                       <p className="text-sm text-gray-500">
                         CRO {/* {agendamentoSelecionado.agendamento.dentista_cro} */} 12345
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="bg-sky-100 rounded-full p-2">
+                      <Stethoscope size={20} className="text-sky-700" weight="fill" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-800">Procedimento</p>
+                      <p className="text-sm text-gray-600">
+                        {agendamentoSelecionado.agendamento.servico && agendamentoSelecionado.agendamento.procedimento_nome 
+                          ? agendamentoSelecionado.agendamento.procedimento_nome 
+                          : "Consulta de Rotina"}
                       </p>
                     </div>
                   </div>

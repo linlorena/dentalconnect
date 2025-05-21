@@ -11,7 +11,7 @@ function DentistCard({ dentista }) {
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-200">
-      <div className="bg-gradient-to-r from-cyan-500 to-blue-500 h-24 relative">
+      <div className="bg-gradient-to-r from-custom-teal to-sky-700 h-24 relative">
         <div className="absolute -bottom-12 left-6">
           <div className="relative">
             <div className="w-24 h-24 rounded-full bg-white p-1 shadow-md">
@@ -34,7 +34,7 @@ function DentistCard({ dentista }) {
       <div className="pt-14 px-6 pb-6">
         <h3 className="text-xl font-bold text-gray-800 mb-2">{dentista.usuario?.nome || "Nome não disponível"}</h3>
 
-        <div className="flex items-center gap-2 mb-3 text-blue-600">
+        <div className="flex items-center gap-2 mb-3 text-custom-teal-2">
           <Award size={18} />
           <span className="font-medium">CRO: {dentista.numero_cro || "Não informado"}</span>
         </div>
@@ -64,7 +64,7 @@ function DentistCard({ dentista }) {
           </div>
         </div>
 
-        <button className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center gap-2">
+        <button className="mt-4 w-full bg-custom-teal-2 hover:bg-custom-teal-dark font-semibold text-white py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center gap-2">
           Agendar Consulta
         </button>
       </div>

@@ -8,9 +8,8 @@ function ServicoItem({ codigo, nome, descricao, onAgendar }) {
             <td className="py-3 px-4">{descricao}</td>
             <td className="py-3 px-4">
                 <button
-                    className="bg-sky-600 hover:bg-sky-700 text-white font-semibold px-4 py-2 rounded"
-                    onClick={onAgendar}
-                >
+                    className="bg-custom-teal-hover hover:bg-custom-teal-2 ease-in-out duration-150 cursor-pointer text-white font-semibold px-4 py-2 rounded"
+                    onClick={onAgendar}>
                     Agendar
                 </button>
             </td>

@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  House,
-  MagnifyingGlass,
-  ShootingStar,
-  SignIn,
-  Tooth,
-  Stethoscope,
-  Gear,
-} from "@phosphor-icons/react";
+import { House, MagnifyingGlass, ShootingStar, SignIn, Tooth, Stethoscope, Gear } from "@phosphor-icons/react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo_dentalconnect.png";
 import { useAuth } from "../context/auth";
@@ -146,7 +138,7 @@ function LayoutPrincipal({ children }) {
         />
       )}
 
-      <div className="flex-1 overflow-y-auto p-6 bg-white">{children}</div>
+      <div className="flex-1 overflow-y-auto p-6 bg-gray-50">{children}</div>
     </div>
   );
 }

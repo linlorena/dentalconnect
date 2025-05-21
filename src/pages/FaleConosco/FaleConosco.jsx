@@ -23,15 +23,12 @@ function FaleConosco() {
         }
 
         try {
-            
-
-            const response = await axios.post('http://localhost:3001/api/fale-conosco', {
+                        const response = await axios.post('http://localhost:3001/api/fale-conosco', {
                 nome,
                 email,
                 telefone,
                 mensagem
             });
-
 
             if (response.status === 201) {
                 toast.success('Sua mensagem foi enviada com sucesso. Nossa equipe de suporte entrará em contato com você em breve.');

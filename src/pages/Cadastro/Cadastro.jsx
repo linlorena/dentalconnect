@@ -8,7 +8,7 @@ import { Tooltip } from "react-tooltip";
 
 function Cadastro() {
     const [mostrarSenha, setMostrarSenha] = useState(false);
-    const [mostrarSenha2, setmostrarSenha2] = useState(false);
+    const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
     const [tipoUsuario, setTipoUsuario] = useState(null);
     const [estados, setEstados] = useState([]);
     const [estadoSelecionado, setEstadoSelecionado] = useState("");
@@ -131,9 +131,9 @@ function Cadastro() {
                                 </button>
                             </div>
                             <div className="relative w-full">
-                                    <input type={mostrarSenha2 ? "text" : "password"} placeholder="Confirmar Senha" value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} className="p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
-                                    <button type="button" onClick={() => setmostrarSenha2(!mostrarSenha2)} className="absolute right-4 top-3 text-gray-500 cursor-pointer">
-                                        {mostrarSenha2 ? <Eye size={24} /> : <EyeClosed size={24} />}
+                                    <input type={mostrarConfirmacao ? "text" : "password"} placeholder="Confirmar Senha" value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} className="p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150" />
+                                    <button type="button" onClick={() => setMostrarConfirmacao(!mostrarConfirmacao)} className="absolute right-4 top-3 text-gray-500 cursor-pointer">
+                                        {mostrarConfirmacao ? <Eye size={24} /> : <EyeClosed size={24} />}
                                     </button>
                                 </div>
                         </div>

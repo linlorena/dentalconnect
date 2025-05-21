@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import axios from "axios"
-import { ArrowLeft, X, MapPin, Stethoscope } from "@phosphor-icons/react"
+import { ArrowCircleLeft, X, MapPin, Stethoscope } from "@phosphor-icons/react"
 import { useNavigate } from "react-router-dom"
 
 function ProcedimentosModal({ local, onClose }) {
@@ -55,16 +55,15 @@ function ProcedimentosModal({ local, onClose }) {
           <div className="flex items-center space-x-3">
             <button 
               onClick={onClose} 
-              className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
-              aria-label="Voltar"
-            >
-              <ArrowLeft size={22} weight="bold" />
+              className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+              aria-label="Voltar">
+              <ArrowCircleLeft size={22} weight="bold" className="text-custom-teal hover:text-custom-teal-hover ease-in-out duration-150" />
             </button>
-            <h3 className="text-lg md:text-xl font-semibold text-sky-900">Procedimentos Disponíveis</h3>
+            <h3 className="text-lg md:text-xl font-semibold text-custom-teal-dark">Procedimentos Disponíveis</h3>
           </div>
           <button 
             onClick={onClose} 
-            className="p-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-red-500 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            className="p-2 rounded-full text-gray-400 hover:bg-gray-100 hover:text-red-500 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-custom-teal focus:ring-offset-2"
             aria-label="Fechar modal"
           >
             <X size={20} weight="bold" />
@@ -72,9 +71,9 @@ function ProcedimentosModal({ local, onClose }) {
         </div>
 
         {/* Informações da Clínica - Fixo abaixo do cabeçalho */}
-        <div className="bg-gradient-to-r from-sky-50 to-blue-50 p-5 border-b border-gray-200 sticky top-[73px] bg-white z-10">
-          <h4 className="text-xl font-bold text-sky-700 mb-1 flex items-center">
-             <MapPin size={20} className="mr-2 text-sky-600" /> 
+        <div className="bg-gradient-to-r from-custom-light to-blue-50 p-5 border-b border-gray-200 sticky top-[73px] bg-white z-10">
+          <h4 className="text-xl font-bold text-custom-teal-dark mb-1 flex items-center">
+             <MapPin size={20} className="mr-2 text-custom-teal" /> 
              {local.nome}
           </h4>
           <p className="text-gray-600 text-sm">
@@ -102,11 +101,10 @@ function ProcedimentosModal({ local, onClose }) {
               // Card para procedimento
               <div 
                 key={procedimento.id} 
-                className="bg-white rounded-lg shadow-md border border-gray-200 p-5 transition-shadow duration-200 hover:shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 md:space-x-4"
-              >
+                className="bg-white rounded-lg shadow-md border border-gray-200 p-5 transition-shadow duration-200 hover:shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 md:space-x-4">
                 <div className="flex-grow">
                   <h4 className="text-lg font-semibold text-sky-800 mb-1 flex items-center">
-                    <Stethoscope size={18} className="mr-2 text-sky-600" />
+                    <Stethoscope size={18} className="mr-2 text-custom-teal-2" />
                     {procedimento.nome}
                   </h4>
                   {procedimento.descricao && (
@@ -116,7 +114,7 @@ function ProcedimentosModal({ local, onClose }) {
                 <div className="flex-shrink-0 w-full md:w-auto">
                   <button
                     onClick={() => handleAgendarProcedimento(procedimento.id)}
-                    className="w-full md:w-auto bg-sky-600 text-white py-2 px-5 rounded-lg font-medium hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-white transition-colors duration-150 shadow-sm hover:shadow-md"
+                    className="w-full md:w-auto bg-custom-teal text-white py-2 px-5 rounded-lg font-medium hover:bg-custom-teal-2 focus:outline-none focus:ring-2 focus:ring-custom-teal-2 focus:ring-offset-2 focus:ring-offset-white transition-colors duration-150 shadow-sm hover:shadow-md"
                   >
                     Agendar
                   </button>

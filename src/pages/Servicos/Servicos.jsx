@@ -58,26 +58,22 @@ function Servicos() {
             <LayoutPrincipal>
                 <div className="w-full h-full flex flex-col">
                     <div className="flex-grow px-4 md:px-12 py-10">
-                        {/* Barra de navegação */}
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-3xl font-bold text-sky-600">Serviços Disponíveis</h2>
+                            <h2 className="text-3xl font-bold text-custom-teal-dark">Serviços Disponíveis</h2>
                             <input
                                 type="text"
                                 placeholder="Buscar procedimento"
                                 value={busca}
                                 onChange={(e) => setBusca(e.target.value)}
-                                className="w-full md:w-1/3 p-2 border border-gray-300 rounded"
-                            />
+                                className="w-full md:w-1/3 p-2 border border-gray-300 placeholder:italic rounded-2xl focus-within:ring-2 focus:outline-none focus-within:ring-custom-teal focus-within:drop-shadow-sm ease-in-out duration-150"/>
                         </div>
     
-                        {/* Exibição de erro */}
                         {erro && (
                             <div className="bg-red-200 text-red-700 p-3 mb-4 rounded-md">
                                 {erro}
                             </div>
                         )}
     
-                        {/* Tabela de serviços */}
                         <div className="overflow-x-auto mb-8">
                             <table className="w-full table-auto text-left">
                                 <thead>

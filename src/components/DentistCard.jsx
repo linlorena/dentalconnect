@@ -5,7 +5,7 @@ function DentistCard({ dentista }) {
   const navigate = useNavigate();
 
   const handleAgendar = () => {
-    navigate("/consultas?dentista=${dentista.id}");
+    navigate(`/consultas?dentista=${dentista.id}`);
   }
 
   if (!dentista) {
@@ -73,8 +73,9 @@ function DentistCard({ dentista }) {
 
         <button 
           onClick={handleAgendar}
-          className="mt-4 w-full bg-custom-teal-2 hover:bg-custom-teal-dark font-semibold text-white py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center gap-2">
-            Agendar Consulta
+          className="mt-4 w-full bg-custom-teal-2 hover:bg-custom-teal-dark font-semibold text-white py-3 px-4 rounded-md transition-colors duration-300 flex items-center justify-center gap-2">
+            <Calendar size={20} />
+            <span>Agendar Consulta</span>
         </button>
       </div>
     </div>

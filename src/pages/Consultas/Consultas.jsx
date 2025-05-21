@@ -123,13 +123,14 @@ function Consultas() {
       servico: procedimentoSelecionado || 1 // Usa o procedimento selecionado ou 1 como fallback
     }, { headers })
       .then((response) => {
-        setMensagemConfirmacao(response.data.message);
+        setMensagemConfirmacao("Consulta agendada com sucesso! Redirecionando...");
         setTimeout(() => {
           navigate("/agendamentos");
         }, 2000);
       })
       .catch((error) => {
         console.error("Erro ao marcar consulta:", error);
+        setMensagemConfirmacao("Erro ao agendar consulta. Por favor, tente novamente.");
         setCarregando(false);
       });
   };
@@ -141,6 +142,16 @@ function Consultas() {
           <h2 className="text-3xl font-bold text-teal-600 mb-2">Agendar Consulta</h2>
           <p className="text-gray-600">Escolha um dentista e um horário disponível para sua consulta</p>
         </div>
+
+        {mensagemConfirmacao && (
+          <div className={`mb-6 p-4 rounded-md ${
+            mensagemConfirmacao.includes("sucesso") 
+              ? "bg-green-100 text-green-700" 
+              : "bg-red-100 text-red-700"
+          }`}>
+            {mensagemConfirmacao}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Seleção de dentista */}
@@ -189,6 +200,7 @@ function Consultas() {
             {dentistaSelecionado && (
               <div className="mt-4 p-4 bg-teal-50 rounded-md border border-teal-100">
                 <h4 className="font-semibold text-teal-700">Dr(a). {dentistaSelecionado.nome}</h4>
+                <p className="text-sm text-gray-600 mt-1">CRO: {dentistaSelecionado.numero_cro}</p>
               </div>
             )}
           </div>
@@ -244,12 +256,6 @@ function Consultas() {
                 <span className="font-medium w-24">Horário:</span>
                 <span>{horarioSelecionado || "Nenhum selecionado"}</span>
               </li>
-              {procedimentoInfo && (
-                <li className="flex items-start">
-                  <span className="font-medium w-24">Procedimento:</span>
-                  <span>{procedimentoInfo.nome}</span>
-                </li>
-              )}
             </ul>
           </div>
 
@@ -274,14 +280,6 @@ function Consultas() {
             </button>
           </div>
         </div>
-
-        {mensagemConfirmacao && (
-          <div className="mt-6 bg-green-50 border border-green-100 text-green-700 p-4 rounded-md flex items-center justify-center">
-            <CheckCircle size={20} className="mr-2" />
-            <p className="font-medium">{mensagemConfirmacao}</p>
-            <p className="ml-2 text-sm">Redirecionando para seus agendamentos...</p>
-          </div>
-        )}
       </div>
     </LayoutPrincipal>
   );

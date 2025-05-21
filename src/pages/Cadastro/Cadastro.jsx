@@ -162,8 +162,7 @@ function Cadastro() {
                         <button
         type="button"
         onClick={handleCadastro}
-        className="w-full mt-6 bg-custom-teal …"
-      >
+        className="w-full mt-6 bg-custom-teal hover:bg-custom-teal-hover text-sky-900 text-xl font-semibold py-3 rounded-lg transition">
         Cadastrar
       </button>
                         </>

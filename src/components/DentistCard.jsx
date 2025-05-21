@@ -1,6 +1,13 @@
 import { User, MapPin, Mail, Calendar, Award } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 function DentistCard({ dentista }) {
+  const navigate = useNavigate();
+
+  const handleAgendar = () => {
+    navigate("/consultas?dentista=${dentista.id}");
+  }
+
   if (!dentista) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 flex items-center justify-center h-64">
@@ -64,8 +71,10 @@ function DentistCard({ dentista }) {
           </div>
         </div>
 
-        <button className="mt-4 w-full bg-custom-teal-2 hover:bg-custom-teal-dark font-semibold text-white py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center gap-2">
-          Agendar Consulta
+        <button 
+          onClick={handleAgendar}
+          className="mt-4 w-full bg-custom-teal-2 hover:bg-custom-teal-dark font-semibold text-white py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center gap-2">
+            Agendar Consulta
         </button>
       </div>
     </div>

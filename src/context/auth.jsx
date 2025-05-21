@@ -17,7 +17,17 @@ export const AuthProvider = ({ children }) => {
     }
   })
   const [tipo, setTipo] = useState(localStorage.getItem("tipo") || null)
-  const [nome, setNome] = useState(localStorage.getItem("nome") || null)
+  const [nome, setNome] = useState(() => {
+    try {
+      const storedNome = localStorage.getItem("nome")
+      console.log("Nome armazenado:", storedNome)
+      return storedNome || null
+    } catch (error) {
+      console.error("Erro ao carregar nome do localStorage:", error)
+      localStorage.removeItem("nome")
+      return null
+    }
+  })
   const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || null)
   const [email, setEmail] = useState(localStorage.getItem("email") || null)
 
@@ -35,6 +45,15 @@ export const AuthProvider = ({ children }) => {
         const storedAvatar = localStorage.getItem("avatar")
         const storedEmail = localStorage.getItem("email")
 
+        console.log("Dados armazenados:", {
+          token: storedToken,
+          user: storedUser,
+          tipo: storedTipo,
+          nome: storedNome,
+          avatar: storedAvatar,
+          email: storedEmail
+        })
+
         if (storedToken && storedUser && storedTipo) {
           setToken(storedToken)
           setUser(JSON.parse(storedUser))
@@ -43,6 +62,7 @@ export const AuthProvider = ({ children }) => {
           setAvatar(storedAvatar)
           setEmail(storedEmail)
         } else {
+          console.log("Dados de autenticação incompletos, limpando localStorage")
           localStorage.removeItem("token")
           localStorage.removeItem("user")
           localStorage.removeItem("tipo")
@@ -58,7 +78,6 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.error("Erro ao inicializar autenticação:", error)
-
         localStorage.removeItem("token")
         localStorage.removeItem("user")
         localStorage.removeItem("tipo")

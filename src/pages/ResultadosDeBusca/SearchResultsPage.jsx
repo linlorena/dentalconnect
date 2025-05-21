@@ -78,15 +78,14 @@ function SearchResultsPage() {
           <button
             onClick={handleGoBack}
             className="flex items-center justify-center p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-600 transition-colors duration-300"
-            aria-label="Voltar"
-          >
+            aria-label="Voltar">
             <ArrowCircleLeft size={24} />
           </button>
-          <h2 className="text-3xl font-bold text-sky-600">Resultados da Pesquisa</h2>
+          <h2 className="text-3xl font-bold text-custom-teal-2">Resultados da Pesquisa</h2>
         </div>
 
         <div className="flex flex-col items-center justify-center py-16 bg-white rounded-lg shadow-sm">
-          <div className="animate-spin text-sky-600 mb-4">
+          <div className="animate-spin text-custom-teal mb-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="40"
@@ -96,8 +95,7 @@ function SearchResultsPage() {
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
-              strokeLinejoin="round"
-            >
+              strokeLinejoin="round">
               <path d="M21 12a9 9 0 1 1-6.219-8.56" />
             </svg>
           </div>
@@ -117,19 +115,18 @@ function SearchResultsPage() {
       <div className="flex items-center gap-4 mb-10 mt-16">
         <button
           onClick={handleGoBack}
-          className="flex items-center justify-center p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-600 transition-colors duration-300"
-          aria-label="Voltar"
-        >
-          <ArrowLeft size={24} />
+          className="flex items-center justify-center p-2 rounded-full bg-custom-light hover:bg-custom-light-hover text-custom-teal-2 transition-colors duration-300"
+          aria-label="Voltar">
+          <ArrowCircleLeft size={24} />
         </button>
-        <h2 className="text-3xl font-bold text-sky-600">Resultados da Pesquisa</h2>
+        <h2 className="text-3xl font-bold text-custom-teal-2">Resultados da Pesquisa</h2>
       </div>
 
       {searchTerm && (
         <p className="text-gray-600 mb-6">
           Mostrando resultados para: <span className="font-medium ">"{searchTerm}"</span>
           {dentistas.length > 0 && (
-            <span className="ml-2 bg-sky-100 text-sky-800 font-medium px-2.5 py-0.5 rounded-full">
+            <span className="ml-2 bg-custom-light text-custom-teal-dark font-medium px-2.5 py-0.5 rounded-full">
               {dentistas.length} {dentistas.length === 1 ? "resultado" : "resultados"}
             </span>
           )}
@@ -147,9 +144,8 @@ function SearchResultsPage() {
           <p className="text-gray-500 text-lg">Nenhum dentista encontrado com esse nome.</p>
           <button
             onClick={handleGoBack}
-            className="mt-4 inline-flex items-center gap-2 text-sky-600 hover:text-sky-700"
-          >
-            <ArrowLeft size={16} />
+            className="mt-4 inline-flex items-center gap-2 text-custom-teal-2 hover:text-sky-700">
+            <ArrowCircleLeft size={16} />
             <span>Voltar à pesquisa</span>
           </button>
         </div>

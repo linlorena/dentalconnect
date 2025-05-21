@@ -64,7 +64,7 @@ function Login() {
             <input
               type="email"
               placeholder="Digite seu e-mail"
-              className="w-full p-3 rounded-lg bg-gray-100 text-gray-700"
+              className="w-full p-3 rounded-lg bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-custom-teal-2 ease-in-out duration-150"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -75,12 +75,12 @@ function Login() {
               <input
                 type={mostrarSenha ? "text" : "password"}
                 placeholder="Digite sua senha"
-                className="w-full p-3 rounded-lg bg-gray-100 text-gray-700"
+                className="w-full p-3 rounded-lg bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-custom-teal-2 ease-in-out duration-150"
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
                 required
               />
-              <button type="button" onClick={visibilidadeSenha} className="absolute right-4 top-3 text-gray-500">
+              <button type="button" onClick={visibilidadeSenha} className="absolute right-4 top-3 text-gray-500 hover:text-gray-600">
                 {mostrarSenha ? <Eye size={24} /> : <EyeClosed size={24} />}
               </button>
             </div>

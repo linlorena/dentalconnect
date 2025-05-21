@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
   const [tipo, setTipo] = useState(localStorage.getItem("tipo") || null)
   const [nome, setNome] = useState(localStorage.getItem("nome") || null)
   const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || null)
+  const [email, setEmail] = useState(localStorage.getItem("email") || null)
 
   const [loading, setLoading] = useState(true)
   const [redirectPath, setRedirectPath] = useState(null)
@@ -32,6 +33,7 @@ export const AuthProvider = ({ children }) => {
         const storedTipo = localStorage.getItem("tipo")
         const storedNome = localStorage.getItem("nome")
         const storedAvatar = localStorage.getItem("avatar")
+        const storedEmail = localStorage.getItem("email")
 
         if (storedToken && storedUser && storedTipo) {
           setToken(storedToken)
@@ -39,17 +41,20 @@ export const AuthProvider = ({ children }) => {
           setTipo(storedTipo)
           setNome(storedNome)
           setAvatar(storedAvatar)
+          setEmail(storedEmail)
         } else {
           localStorage.removeItem("token")
           localStorage.removeItem("user")
           localStorage.removeItem("tipo")
           localStorage.removeItem("nome")
           localStorage.removeItem("avatar")
+          localStorage.removeItem("email")
           setToken(null)
           setUser(null)
           setTipo(null)
           setNome(null)
           setAvatar(null)
+          setEmail(null)
         }
       } catch (error) {
         console.error("Erro ao inicializar autenticação:", error)
@@ -59,11 +64,13 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("tipo")
         localStorage.removeItem("nome")
         localStorage.removeItem("avatar")
+        localStorage.removeItem("email")
         setToken(null)
         setUser(null)
         setTipo(null)
         setNome(null)
         setAvatar(null)
+        setEmail(null)
       } finally {
         setLoading(false)
       }
@@ -93,6 +100,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("tipo", response.data.tipo)
       localStorage.setItem("nome", response.data.nome)
       localStorage.setItem("avatar", response.data.avatar)
+      localStorage.setItem("email", response.data.email)
 
       // Atualizar o estado
       setToken(response.data.token)
@@ -100,6 +108,7 @@ export const AuthProvider = ({ children }) => {
       setTipo(response.data.tipo)
       setNome(response.data.nome)
       setAvatar(response.data.avatar)
+      setEmail(response.data.email)
 
       const path = response.data.tipo === "dentista" ? "/dentista" : "/home"
       setRedirectPath(path)
@@ -123,12 +132,14 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("tipo")
     localStorage.removeItem("nome")
     localStorage.removeItem("avatar")
+    localStorage.removeItem("email")
 
     setToken(null)
     setUser(null)
     setTipo(null)
     setNome(null)
     setAvatar(null)
+    setEmail(null)
     setRedirectPath(null)
 
     window.location.href = "/"
@@ -142,6 +153,7 @@ export const AuthProvider = ({ children }) => {
         token,
         tipo,
         nome,
+        email,
         avatar,
         login,
         logout,

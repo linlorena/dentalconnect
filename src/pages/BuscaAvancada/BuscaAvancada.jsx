@@ -83,7 +83,7 @@ function BuscaAvancada() {
               Busca avançada
             </h2>
             <p className="text-sky-900 text-lg md:text-3xl mt-8 text-center md:text-left font-semibold">
-              Agende <span className="text-sky-600 font-semibold">agora</span>{" "}
+              Agende <span className="text-custom-teal font-semibold">agora</span>{" "}
               sua consulta.
             </p>
             <p className="text-sky-900 text-md font-medium mt-2 mb-6 text-center md:text-left">
@@ -93,7 +93,7 @@ function BuscaAvancada() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-xl">
               <div className="relative">
                 <select
-                  className="w-full p-3 border focus:shadow-gray-200 focus:shadow-md border-gray-300 rounded-lg appearance-none bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-600 ease-in duration-150"
+                  className="w-full p-3 border focus:shadow-gray-200 focus:shadow-md border-gray-300 rounded-lg appearance-none bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150"
                   value={estadoSelecionado}
                   onChange={(e) => setEstadoSelecionado(e.target.value)}
                 >
@@ -112,7 +112,7 @@ function BuscaAvancada() {
 
               <div className="relative">
                 <select
-                  className="w-full p-3 focus:shadow-gray-200 focus:shadow-md border border-gray-300 rounded-lg appearance-none bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-600 ease-in duration-150"
+                  className="w-full p-3 focus:shadow-gray-200 focus:shadow-md border border-gray-300 rounded-lg appearance-none bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal-2 ease-in duration-150"
                   value={cidadeSelecionada}
                   onChange={(e) => setCidadeSelecionada(e.target.value)}
                   disabled={!estadoSelecionado}
@@ -132,7 +132,7 @@ function BuscaAvancada() {
 
               <div className="flex justify-start sm:col-span-2 mt-4">
                 <button
-                  className={`bg-sky-600 text-white py-3 px-6 rounded-lg hover:bg-sky-700 transition w-full sm:w-auto ${
+                  className={`bg-custom-teal text-white py-3 px-6 rounded-lg hover:bg-custom-teal-hover transition w-full sm:w-auto ${
                     loading ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                   onClick={handleSearch}
@@ -162,7 +162,7 @@ function BuscaAvancada() {
               {/* Header Fixo */}
               <div className="flex items-center justify-between p-5 border-b border-gray-200 sticky top-0 bg-white z-10">
                 <h3 className="text-lg md:text-xl font-semibold text-sky-900 flex items-center">
-                  <Buildings size={24} className="mr-2 text-sky-600" />
+                  <Buildings size={24} className="mr-2 text-custom-teal-dark" />
                   Resultados da Busca
                 </h3>
                 <button 
@@ -203,8 +203,8 @@ function BuscaAvancada() {
                           className="bg-white rounded-lg shadow-md border border-gray-200 p-5 transition-shadow duration-200 hover:shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 md:space-x-4"
                         >
                           <div className="flex-grow">
-                            <h4 className="text-lg font-semibold text-sky-800 mb-1 flex items-center">
-                              <Buildings size={18} className="mr-2 text-sky-600 flex-shrink-0" />
+                            <h4 className="text-lg font-semibold text-custom-teal-dark mb-1 flex items-center">
+                              <Buildings size={18} className="mr-2 text-custom-teal-2 flex-shrink-0" />
                               {local.nome}
                             </h4>
                             <p className="text-gray-600 text-sm flex items-center pl-7"> {/* Alinhado com o texto do nome */}
@@ -215,7 +215,7 @@ function BuscaAvancada() {
                           <div className="flex-shrink-0 w-full md:w-auto pt-2 md:pt-0">
                             <button
                               onClick={() => handleVerProcedimentos(local)}
-                              className="w-full md:w-auto bg-sky-600 text-white py-2 px-5 rounded-lg font-medium hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 focus:ring-offset-white transition-colors duration-150 shadow-sm hover:shadow-md"
+                              className="w-full md:w-auto bg-custom-teal text-white py-2 px-5 rounded-lg font-medium hover:bg-custom-teal-hover  focus:outline-none focus:ring-2 focus:ring-custom-teal focus:ring-offset-2 focus:ring-offset-white transition-colors duration-150 shadow-sm hover:shadow-md"
                             >
                               Ver Procedimentos
                             </button>

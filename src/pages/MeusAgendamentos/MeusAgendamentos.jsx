@@ -139,7 +139,7 @@ function MeusAgendamentos() {
   return (
     <LayoutPrincipal>
       <div className="max-w-5xl mx-auto px-4">
-        {/* Cabeçalho da página */}
+        
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold mt-10 mb-4 text-sky-900">
             Meus Agendamentos
@@ -148,7 +148,7 @@ function MeusAgendamentos() {
             <select
               value={mesSelecionado}
               onChange={(e) => setMesSelecionado(e.target.value)}
-              className="px-4 py-2 rounded-lg text-sm font-medium bg-sky-600 text-white shadow-md focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-sky-700 text-white shadow-md focus:outline-none focus:ring-2 focus:ring-custom-teal"
             >
               {gerarOpcoesMeses().map((mes) => (
                 <option key={mes.value} value={mes.value}>
@@ -159,8 +159,7 @@ function MeusAgendamentos() {
           </div>
         </div>
 
-        {/* Card do usuário */}
-        <div className="bg-gradient-to-r from-sky-500 to-sky-700 rounded-3xl shadow-lg p-6 flex items-center gap-6 mb-8 text-white">
+        <div className="bg-gradient-to-r from-custom-teal to-sky-700 rounded-3xl shadow-lg p-6 flex items-center gap-6 mb-8 text-white">
           <div className="relative">
             <img 
               src={avatar || AvatarDefault} 
@@ -178,7 +177,6 @@ function MeusAgendamentos() {
           </div>
         </div>
 
-        {/* Mensagem se não houver agendamentos */}
         {agendamentosFiltrados.length === 0 && (
           <div className="bg-gray-50 rounded-2xl p-8 text-center shadow-sm border border-gray-200">
             <Calendar size={48} className="mx-auto text-gray-400 mb-3" />
@@ -189,7 +187,6 @@ function MeusAgendamentos() {
           </div>
         )}
 
-        {/* Grid de agendamentos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
           {agendamentosFiltrados.map((agendamento, i) => {
             const dataFormatada = dayjs(agendamento.data).format("DD/MM");
@@ -202,14 +199,14 @@ function MeusAgendamentos() {
               <div 
                 key={i} 
                 className={`bg-white hover:bg-sky-50 duration-150 ease-in rounded-2xl p-5 shadow-sm border-2 cursor-pointer transform transition-all
-                  ${isSelected ? "border-sky-500 shadow-md scale-[1.02]" : "border-transparent hover:border-sky-200"}`} 
+                  ${isSelected ? "border-custom-teal shadow-md scale-[1.02]" : "border-transparent hover:border-sky-200"}`} 
                 onClick={() => handleAgendamentoClick(agendamento)}
               >
                 <div className="flex justify-between items-start mb-3">
-                  <div className="bg-sky-100 rounded-xl p-3 w-16 h-16 flex flex-col items-center justify-center">
-                    <p className="text-2xl font-bold text-sky-700">{dataFormatada}</p>
-                    <p className="text-xs font-medium text-sky-500 capitalize -mt-1">{diaSemana}</p>
-                  </div>
+                <div className="bg-sky-100 rounded-xl px-4 py-3 min-w-[72px] max-w-[90px] flex flex-col items-center justify-center">
+                  <p className="text-2xl font-bold text-custom-teal-dark leading-tight">{dataFormatada}</p>
+                  <p className="text-xs font-medium text-sky-600 capitalize text-center">{diaSemana}</p>
+                </div>
                   <span className="flex items-center px-3 py-1 text-sm rounded-full font-medium border text-green-600 bg-green-100 border-green-200">
                     <CheckCircle className="mr-1" size={16} weight="fill" />
                     Confirmado
@@ -246,22 +243,21 @@ function MeusAgendamentos() {
           })}
         </div>
 
-        {/* Detalhes do agendamento selecionado */}
         {agendamentoSelecionado && (
           <div className="bg-white rounded-3xl shadow-lg p-6 border border-sky-200 mb-12 transition-all duration-300 transform">
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-sky-900 mb-4 flex items-center gap-2">
-                  <div className="bg-sky-100 p-2 rounded-full">
-                    <MapPin size={24} className="text-sky-700" weight="fill" />
+                <h3 className="text-xl font-bold text-custom-teal-dark mb-4 flex items-center gap-2">
+                  <div className="bg-custom-light p-2 rounded-full">
+                    <MapPin size={24} className="text-custom-teal-2" weight="fill" />
                   </div>
                   {agendamentoSelecionado.nomeLocal}
                 </h3>
                 
                 <div className="bg-gray-50 rounded-xl p-4 mb-4">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="bg-sky-100 rounded-full p-2">
-                      <User size={20} className="text-sky-700" weight="fill" />
+                    <div className="bg-custom-light rounded-full p-2">
+                      <User size={20} className="text-custom-teal-2" weight="fill" />
                     </div>
                     <div>
                       <p className="font-semibold text-gray-800">
@@ -274,8 +270,8 @@ function MeusAgendamentos() {
                   </div>
                   
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="bg-sky-100 rounded-full p-2">
-                      <Stethoscope size={20} className="text-sky-700" weight="fill" />
+                    <div className="bg-custom-light rounded-full p-2">
+                      <Stethoscope size={20} className="text-custom-teal-2" weight="fill" />
                     </div>
                     <div>
                       <p className="font-semibold text-gray-800">Procedimento</p>
@@ -288,8 +284,8 @@ function MeusAgendamentos() {
                   </div>
                   
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="bg-sky-100 rounded-full p-2">
-                      <Calendar size={20} className="text-sky-700" weight="fill" />
+                    <div className="bg-custom-light rounded-full p-2">
+                      <Calendar size={20} className="text-custom-teal-2" weight="fill" />
                     </div>
                     <div>
                       <p className="font-semibold text-gray-800">
@@ -303,15 +299,14 @@ function MeusAgendamentos() {
                   
                   <div className="flex items-start gap-3">
                     <div className="bg-sky-100 rounded-full p-2 mt-1">
-                      <MapPin size={20} className="text-sky-700" weight="fill" />
+                      <MapPin size={20} className="text-custom-teal-2" weight="fill" />
                     </div>
                     <div>
                       <p className="font-semibold text-gray-800">Endereço</p>
                       <p className="text-sm text-gray-600">{agendamentoSelecionado.enderecoLocal}</p>
                       <button 
                         onClick={handleVerNoMapa} 
-                        className="mt-3 px-4 py-2 bg-sky-600 font-semibold text-white rounded-xl hover:bg-sky-700 transition-colors flex items-center gap-2 shadow-sm"
-                      >
+                        className="mt-3 px-4 py-2 bg-custom-teal-2 font-semibold text-white rounded-xl hover:bg-custom-teal-dark transition-colors flex items-center gap-2 shadow-sm">
                         <MapPin size={18} weight="bold" />
                         Ver no mapa
                       </button>
@@ -335,20 +330,18 @@ function MeusAgendamentos() {
           </div>
         )}
 
-        {/* Modal do mapa */}
         {modalAberto && agendamentoSelecionado && (
-          <div className="fixed inset-0 z-50 backdrop-blur-sm bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl relative animate-fadeIn overflow-hidden">
+          <div className="fixed inset-0 z-50 backdrop-blur-xs bg-black/30 flex items-center justify-center p-4">
+            <div className="bg-white/30 backdrop-blur-xl rounded-3xl shadow-lg w-full max-w-4xl relative animate-fadeIn overflow-hidden border border-white/20">
               <div className="absolute top-4 right-4 z-10">
                 <button 
                   onClick={fecharModal} 
-                  className="bg-white rounded-full p-2 shadow-lg text-gray-500 hover:text-sky-700 transition-colors"
-                >
+                  className="bg-white/80 backdrop-blur p-2 rounded-full shadow text-gray-600 hover:text-custom-teal-2 transition-colors">
                   <X size={24} weight="bold" />
                 </button>
               </div>
               
-              <div className="p-5 bg-sky-700 text-white">
+              <div className="p-5 bg-custom-teal-dark text-white">
                 <h3 className="text-xl font-bold flex items-center gap-2">
                   <MapPin size={24} weight="fill" />
                   {agendamentoSelecionado.nomeLocal}
@@ -359,11 +352,8 @@ function MeusAgendamentos() {
               <iframe
                 title="Mapa" 
                 src={`https://www.google.com/maps?q=${agendamentoSelecionado.enderecoEncoded}&z=17&output=embed`}
-                width="100%" 
-                height="500" 
-                style={{ border: 0 }}
-                allowFullScreen="" 
-                loading="lazy">
+                width="100%" height="500" style={{ border: 0 }}
+                allowFullScreen="" loading="lazy">
               </iframe>
             </div>
           </div>

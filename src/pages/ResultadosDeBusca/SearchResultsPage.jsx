@@ -120,7 +120,7 @@ function SearchResultsPage() {
           className="flex items-center justify-center p-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-600 transition-colors duration-300"
           aria-label="Voltar"
         >
-          <ArrowLeft size={24} />
+          <ArrowCircleLeft size={24} />
         </button>
         <h2 className="text-3xl font-bold text-sky-600">Resultados da Pesquisa</h2>
       </div>
@@ -149,7 +149,7 @@ function SearchResultsPage() {
             onClick={handleGoBack}
             className="mt-4 inline-flex items-center gap-2 text-sky-600 hover:text-sky-700"
           >
-            <ArrowLeft size={16} />
+            <ArrowCircleLeft size={16} />
             <span>Voltar à pesquisa</span>
           </button>
         </div>

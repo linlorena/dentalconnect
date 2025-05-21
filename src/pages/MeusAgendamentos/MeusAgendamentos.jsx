@@ -19,11 +19,18 @@ function MeusAgendamentos() {
 
   const formatarNome = (nome) => {
     if (!nome) return "Usuário"
-    
-    return nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase()
+    return nome
   }
 
   const nomeFormatado = formatarNome(nome)
+
+  // Função para verificar se o avatar é válido
+  const getAvatarUrl = (avatarUrl) => {
+    if (!avatarUrl || avatarUrl === 'null' || avatarUrl === 'undefined') {
+      return "https://wvttncioiubiecakmzum.supabase.co/storage/v1/object/public/avatar/avatarPaciente.jpg";
+    }
+    return avatarUrl;
+  };
 
   // Gera a lista de meses para o seletor (6 meses atrás até 6 meses à frente)
   const gerarOpcoesMeses = () => {
@@ -76,7 +83,8 @@ function MeusAgendamentos() {
               return {
                 ...agendamento,
                 dentista_nome: dentistaRes.data.usuario?.nome || "Dentista não encontrado",
-                procedimento_nome: procedimento_nome
+                procedimento_nome: procedimento_nome,
+                user_avatar: agendamento.paciente?.avatar || avatar
               };
             } catch (error) {
               console.error("Erro ao buscar dados:", error);
@@ -88,7 +96,8 @@ function MeusAgendamentos() {
               return {
                 ...agendamento,
                 dentista_nome: "Dentista não encontrado",
-                procedimento_nome: "Consulta de Rotina"
+                procedimento_nome: "Consulta de Rotina",
+                user_avatar: avatar
               };
             }
           })
@@ -105,7 +114,7 @@ function MeusAgendamentos() {
       }
     };
     fetchData();
-  }, []);
+  }, [avatar]);
 
   const handleAgendamentoClick = (agendamento) => {
     const localSelecionado = locais.find((l) => l.id === agendamento.local);
@@ -162,9 +171,13 @@ function MeusAgendamentos() {
         <div className="bg-gradient-to-r from-custom-teal to-sky-700 rounded-3xl shadow-lg p-6 flex items-center gap-6 mb-8 text-white">
           <div className="relative">
             <img 
-              src={avatar || AvatarDefault} 
+              src={getAvatarUrl(agendamentos[0]?.user_avatar || avatar)} 
               className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md" 
               alt={nomeFormatado}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://wvttncioiubiecakmzum.supabase.co/storage/v1/object/public/avatar/avatarPaciente.jpg";
+              }}
             />
             <div className="absolute bottom-0 right-0 bg-green-500 w-6 h-6 rounded-full border-2 border-white"></div>
           </div>

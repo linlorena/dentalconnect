@@ -26,8 +26,8 @@ function MeusAgendamentos() {
 
   // Função para verificar se o avatar é válido
   const getAvatarUrl = (avatarUrl) => {
-    if (!avatarUrl || avatarUrl === 'null' || avatarUrl === 'undefined') {
-      return "https://wvttncioiubiecakmzum.supabase.co/storage/v1/object/public/avatar/avatarPaciente.jpg";
+    if (!avatarUrl || avatarUrl === 'null' || avatarUrl === 'undefined' || avatarUrl.trim() === '') {
+      return null;
     }
     return avatarUrl;
   };
@@ -170,15 +170,22 @@ function MeusAgendamentos() {
 
         <div className="bg-gradient-to-r from-custom-teal to-sky-700 rounded-3xl shadow-lg p-6 flex items-center gap-6 mb-8 text-white">
           <div className="relative">
-            <img 
-              src={getAvatarUrl(agendamentos[0]?.user_avatar || avatar)} 
-              className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md" 
-              alt={nomeFormatado}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "https://wvttncioiubiecakmzum.supabase.co/storage/v1/object/public/avatar/avatarPaciente.jpg";
-              }}
-            />
+            {getAvatarUrl(agendamentos[0]?.user_avatar || avatar) ? (
+              <img 
+                src={getAvatarUrl(agendamentos[0]?.user_avatar || avatar)} 
+                className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md" 
+                alt={nomeFormatado}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'block';
+                }}
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-full bg-white p-1 shadow-md flex items-center justify-center">
+                <User size={48} className="text-gray-400" />
+              </div>
+            )}
             <div className="absolute bottom-0 right-0 bg-green-500 w-6 h-6 rounded-full border-2 border-white"></div>
           </div>
           <div>

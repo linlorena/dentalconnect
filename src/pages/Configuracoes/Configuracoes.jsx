@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
 import AvatarDefault from "../../assets/avatar.png";
 import { useAuth } from "../../context/auth";
 import { User, Gear, Camera, Trash, EnvelopeSimple, Lock, FloppyDisk, Info, CalendarBlank, Clock, CaretDown, CaretUp, EyeClosed, Eye } from "@phosphor-icons/react";
+import axios from "axios";
 
 function Configuracoes() {
-  const { nome, email, avatar } = useAuth();
+  const { nome, email, avatar, id, token, updateUserData } = useAuth();
 
-  const [novoNome, setNovoNome] = useState("");
-  const [novoEmail, setNovoEmail] = useState("");
+  const [novoNome, setNovoNome] = useState(nome || "");
+  const [novoEmail, setNovoEmail] = useState(email || "");
   const [senha, setSenha] = useState("");
   const [confirmacaoSenha, setConfirmacaoSenha] = useState("");
   const [senhaError, setSenhaError] = useState("");
   const [activeTab, setActiveTab] = useState("perfil");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
@@ -25,27 +27,74 @@ function Configuracoes() {
 
   const formatarNome = (nome) => {
     if (!nome) return "Usuário";
-    return nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+    return nome;
   };
 
   const formatarEmail = (email) => {
-    if (!email) return "TESTE123";
+    if (!email) return "";
     return email;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (senha && senha !== confirmacaoSenha) {
-      setSenhaError("As senhas não coincidem");
-      return;
-    }
-
+    setError("");
     setSenhaError("");
-    console.log("Dados salvos", { novoNome, novoEmail, senha });
 
-    setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
+    try {
+      // Validar senha apenas se ambas as senhas foram fornecidas
+      if (senha && confirmacaoSenha) {
+        if (senha !== confirmacaoSenha) {
+          setSenhaError("As senhas não coincidem");
+          return;
+        }
+      }
+
+      // Preparar dados para atualização
+      const updateData = {
+        nome: novoNome,
+        email: novoEmail,
+      };
+
+      // Adicionar senha apenas se foi fornecida
+      if (senha) {
+        updateData.senha = senha;
+      }
+
+      // Fazer a requisição para atualizar o usuário
+      const response = await axios.put(
+        `http://localhost:3001/api/users/${id}`,
+        updateData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Dados atualizados com sucesso:", response.data);
+      
+      // Atualizar o contexto de autenticação com os novos dados
+      if (updateUserData) {
+        updateUserData({
+          nome: novoNome,
+          email: novoEmail,
+          // Mantém os outros dados do usuário inalterados
+          avatar,
+          id,
+          token,
+        });
+      }
+
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+
+      // Limpar campos de senha após sucesso
+      setSenha("");
+      setConfirmacaoSenha("");
+    } catch (error) {
+      console.error("Erro ao atualizar dados:", error);
+      setError(error.response?.data?.error || "Erro ao atualizar dados. Tente novamente.");
+    }
   };
 
   const menuItems = [
@@ -173,6 +222,11 @@ function Configuracoes() {
                     </div>
 
                     <div className="space-y-6 max-w-2xl">
+                      {error && (
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                          {error}
+                        </div>
+                      )}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -210,64 +264,63 @@ function Configuracoes() {
                         </div>
                       </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Nova Senha */}
-                  <div className="w-full">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Nova Senha</label>
-                    <div className="relative w-full">
-                      {/* Ícone de cadeado à esquerda */}
-                      <div className="absolute left-3 top-3 text-gray-400 pointer-events-none">
-                        <Lock size={20} />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Nova Senha */}
+                        <div className="w-full">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Nova Senha</label>
+                          <div className="relative w-full">
+                            {/* Ícone de cadeado à esquerda */}
+                            <div className="absolute left-3 top-3 text-gray-400 pointer-events-none">
+                              <Lock size={20} />
+                            </div>
+                            <input
+                              type={mostrarSenha ? "text" : "password"}
+                              placeholder="Digite sua nova senha"
+                              value={senha}
+                              onChange={(e) => setSenha(e.target.value)}
+                              minLength={8}
+                              className="pl-10 pr-10 p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150"
+                            />
+                            {/* Botão de visibilidade à direita */}
+                            <button
+                              type="button"
+                              onClick={visibilidadeSenha}
+                              className="absolute right-3 top-3 text-gray-500 cursor-pointer"
+                            >
+                              {mostrarSenha ? <Eye size={24} /> : <EyeClosed size={24} />}
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Confirmar Senha */}
+                        <div className="w-full">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar Senha</label>
+                          <div className="relative w-full">
+                            <div className="absolute left-3 top-3 text-gray-400 pointer-events-none">
+                              <Lock size={20} />
+                            </div>
+                            <input
+                              type={mostrarConfirmacao ? "text" : "password"}
+                              placeholder="Confirme sua nova senha"
+                              value={confirmacaoSenha}
+                              onChange={(e) => setConfirmacaoSenha(e.target.value)}
+                              minLength={8}
+                              className="pl-10 pr-10 p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150"
+                            />
+                            <button
+                              type="button"
+                              onClick={visibilidadeConfirmacao}
+                              className="absolute right-3 top-3 text-gray-500 cursor-pointer"
+                            >
+                              {mostrarConfirmacao ? <Eye size={24} /> : <EyeClosed size={24} />}
+                            </button>
+                          </div>
+                          {senhaError && (
+                            <p className="text-red-500 text-sm mt-1">{senhaError}</p>
+                          )}
+                        </div>
                       </div>
-                      <input
-                        type={mostrarSenha ? "text" : "password"}
-                        placeholder="Digite sua nova senha"
-                        value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
-                        minLength={8}
-                        className="pl-10 pr-10 p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150"
-                      />
-                      {/* Botão de visibilidade à direita */}
-                      <button
-                        type="button"
-                        onClick={visibilidadeSenha}
-                        className="absolute right-3 top-3 text-gray-500 cursor-pointer"
-                      >
-                        {mostrarSenha ? <Eye size={24} /> : <EyeClosed size={24} />}
-                      </button>
                     </div>
-                </div>
-
-    {/* Confirmar Senha */}
-    <div className="w-full">
-      <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar Senha</label>
-      <div className="relative w-full">
-        <div className="absolute left-3 top-3 text-gray-400 pointer-events-none">
-          <Lock size={20} />
-        </div>
-        <input
-          type={mostrarConfirmacao ? "text" : "password"}
-          placeholder="Confirme sua nova senha"
-          value={confirmacaoSenha}
-          onChange={(e) => setConfirmacaoSenha(e.target.value)}
-          minLength={8}
-          className="pl-10 pr-10 p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150"
-        />
-        <button
-          type="button"
-          onClick={visibilidadeConfirmacao}
-          className="absolute right-3 top-3 text-gray-500 cursor-pointer"
-        >
-          {mostrarConfirmacao ? <Eye size={24} /> : <EyeClosed size={24} />}
-        </button>
-      </div>
-      {senhaError && (
-        <p className="text-red-500 text-sm mt-1">{senhaError}</p>
-      )}
-    </div>
-  </div>
-
-
 
                     <div className="flex justify-end">
                       <button
@@ -277,70 +330,69 @@ function Configuracoes() {
                         <FloppyDisk size={20} weight="bold" />
                         Salvar Alterações
                       </button>
-                      </div>
                     </div>
                   </form>
                 )}
 
-              {activeTab === "ajuda" && (
-                <div className="max-w-3xl">
-                  <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-1">Central de Ajuda</h2>
-                    <p className="text-gray-500 text-sm">
-                      Dúvidas frequentes sobre o sistema de agendamento odontológico
-                    </p>
-                  </div>
-
-                  <div className="bg-custom-light p-6 rounded-xl mb-6 flex items-start border border-custom-teal">
-                    <div className="flex-shrink-0 bg-light p-3 rounded-full mr-4">
-                      <Info size={24} className="text-custom-teal" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-custom-teal-dark mb-2">Precisando de ajuda?</h3>
-                      <p className="text-custom-teal-dark text-sm">
-                        Verifique as dúvidas frequentes abaixo ou entre em contato com nosso
-                        suporte pelo telefone (85) 98765-4321 ou pelo email
-                        faleconosco@dentalconnect.com
+                {activeTab === "ajuda" && (
+                  <div className="max-w-3xl">
+                    <div className="mb-6">
+                      <h2 className="text-2xl font-bold text-gray-800 mb-1">Central de Ajuda</h2>
+                      <p className="text-gray-500 text-sm">
+                        Dúvidas frequentes sobre o sistema de agendamento odontológico
                       </p>
                     </div>
-                  </div>
 
-                  <div className="space-y-4">
-                    {duvidasFrequentes.map((duvida, index) => (
-                      <div
-                        key={index}
-                        className="border border-gray-200 rounded-xl shadow-sm bg-white"
-                      >
-                        <button
-                          onClick={() =>
-                            setExpandedIndex((prev) => (prev === index ? null : index))
-                          }
-                          className="w-full px-6 py-4 flex items-center justify-between text-left"
-                        >
-                          <div className="flex items-center">
-                            <span className="flex items-center justify-center bg-custom-light text-custom-teal-dark w-8 h-8 rounded-full mr-3">
-                              {index === 0 && <CalendarBlank size={16} />}
-                              {index === 1 && <Clock size={16} />}
-                              {index === 2 && <CalendarBlank size={16} />}
-                            </span>
-                            <span className="font-medium text-gray-800">{duvida.pergunta}</span>
-                          </div>
-                          <span className="text-gray-500">
-                            {expandedIndex === index ? (
-                              <CaretUp size={20} />
-                            ) : (
-                              <CaretDown size={20} />
-                            )}
-                          </span>
-                        </button>
-                        {expandedIndex === index && (
-                          <div className="px-6 pb-4 text-gray-600">{duvida.resposta}</div>
-                        )}
+                    <div className="bg-custom-light p-6 rounded-xl mb-6 flex items-start border border-custom-teal">
+                      <div className="flex-shrink-0 bg-light p-3 rounded-full mr-4">
+                        <Info size={24} className="text-custom-teal" />
                       </div>
-                    ))}
+                      <div>
+                        <h3 className="font-medium text-custom-teal-dark mb-2">Precisando de ajuda?</h3>
+                        <p className="text-custom-teal-dark text-sm">
+                          Verifique as dúvidas frequentes abaixo ou entre em contato com nosso
+                          suporte pelo telefone (85) 98765-4321 ou pelo email
+                          faleconosco@dentalconnect.com
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      {duvidasFrequentes.map((duvida, index) => (
+                        <div
+                          key={index}
+                          className="border border-gray-200 rounded-xl shadow-sm bg-white"
+                        >
+                          <button
+                            onClick={() =>
+                              setExpandedIndex((prev) => (prev === index ? null : index))
+                            }
+                            className="w-full px-6 py-4 flex items-center justify-between text-left"
+                          >
+                            <div className="flex items-center">
+                              <span className="flex items-center justify-center bg-custom-light text-custom-teal-dark w-8 h-8 rounded-full mr-3">
+                                {index === 0 && <CalendarBlank size={16} />}
+                                {index === 1 && <Clock size={16} />}
+                                {index === 2 && <CalendarBlank size={16} />}
+                              </span>
+                              <span className="font-medium text-gray-800">{duvida.pergunta}</span>
+                            </div>
+                            <span className="text-gray-500">
+                              {expandedIndex === index ? (
+                                <CaretUp size={20} />
+                              ) : (
+                                <CaretDown size={20} />
+                              )}
+                            </span>
+                          </button>
+                          {expandedIndex === index && (
+                            <div className="px-6 pb-4 text-gray-600">{duvida.resposta}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
               </div>
             </div>
           </div>

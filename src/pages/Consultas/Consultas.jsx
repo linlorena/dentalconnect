@@ -10,14 +10,13 @@ function Consultas() {
   const [dentistaSelecionado, setDentistaSelecionado] = useState(null);
   const [horarioSelecionado, setHorarioSelecionado] = useState(null);
   const [mensagemConfirmacao, setMensagemConfirmacao] = useState("");
-  const [pacienteId] = useState(1); // ID do paciente (simulado, pode pegar do contexto)
   const [carregando, setCarregando] = useState(false);
   const [procedimentoSelecionado, setProcedimentoSelecionado] = useState(null);
   const [localSelecionado, setLocalSelecionado] = useState(null);
   const [procedimentoInfo, setProcedimentoInfo] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { token } = useAuth();
+  const { token, id } = useAuth();
 
   useEffect(() => {
     // Extrair parâmetros da URL
@@ -112,15 +111,15 @@ function Consultas() {
     };
 
     setCarregando(true);
-    // Cria a consulta diretamente com o ID do dentista
+    // Cria a consulta com o ID do paciente logado
     axios.post("http://localhost:3001/api/consultation", {
       data: data,
       horario: hora,
-      paciente: pacienteId,
+      paciente: id,
       dentista: dentistaSelecionado.id,
-      local: localSelecionado || 1, // Usa o local selecionado ou 1 como fallback
+      local: localSelecionado || 1,
       status: "Confirmado",
-      servico: procedimentoSelecionado || 1 // Usa o procedimento selecionado ou 1 como fallback
+      servico: procedimentoSelecionado || 1
     }, { headers })
       .then((response) => {
         setMensagemConfirmacao("Consulta agendada com sucesso! Redirecionando...");

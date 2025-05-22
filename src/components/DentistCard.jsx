@@ -12,7 +12,7 @@ function DentistCard({ dentista }) {
   const [procedimentoSelecionado, setProcedimentoSelecionado] = useState(null);
   const [carregando, setCarregando] = useState(false);
   const [mensagem, setMensagem] = useState("");
-  const { token } = useAuth();
+  const { token, id } = useAuth();
 
   const handleAgendar = async () => {
     if (!showAgendamento) {
@@ -57,7 +57,7 @@ function DentistCard({ dentista }) {
       await axios.post("http://localhost:3001/api/consultation", {
         data: data,
         horario: hora,
-        paciente: 1, // ID do paciente (simulado)
+        paciente: id,
         dentista: dentista.id,
         local: dentista.local_id || 1,
         status: "Confirmado",

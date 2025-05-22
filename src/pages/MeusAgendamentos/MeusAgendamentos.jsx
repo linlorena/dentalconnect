@@ -15,7 +15,7 @@ function MeusAgendamentos() {
   const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null);
   const [mesSelecionado, setMesSelecionado] = useState(dayjs().format('YYYY-MM'));
 
-  const { nome, avatar } = useAuth()
+  const { nome, avatar, id } = useAuth()
 
   const formatarNome = (nome) => {
     if (!nome) return "Usuário"
@@ -62,7 +62,7 @@ function MeusAgendamentos() {
         };
 
         const [agendamentosRes, locaisRes] = await Promise.all([
-          axios.get("http://localhost:3001/api/consultation", { headers }),
+          axios.get(`http://localhost:3001/api/consultation/paciente/${id}`, { headers }),
           axios.get("http://localhost:3001/api/locals", { headers })
         ]);
 
@@ -114,7 +114,7 @@ function MeusAgendamentos() {
       }
     };
     fetchData();
-  }, [avatar]);
+  }, [avatar, id]);
 
   const handleAgendamentoClick = (agendamento) => {
     const localSelecionado = locais.find((l) => l.id === agendamento.local);

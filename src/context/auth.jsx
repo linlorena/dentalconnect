@@ -154,6 +154,27 @@ export const AuthProvider = ({ children }) => {
     window.location.href = "/"
   }
 
+  const updateUserData = (newData) => {
+    // Atualizar localStorage
+    if (newData.nome) {
+      localStorage.setItem("nome", newData.nome)
+      setNome(newData.nome)
+    }
+    if (newData.email) {
+      localStorage.setItem("email", newData.email)
+      setEmail(newData.email)
+    }
+    if (newData.avatar) {
+      localStorage.setItem("avatar", newData.avatar)
+    }
+    
+    // Atualizar o objeto user no localStorage
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}")
+    const updatedUser = { ...currentUser, ...newData }
+    localStorage.setItem("user", JSON.stringify(updatedUser))
+    setUser(updatedUser)
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -169,6 +190,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         redirectPath,
         setRedirectPath,
+        updateUserData,
       }}
     >
       {children}

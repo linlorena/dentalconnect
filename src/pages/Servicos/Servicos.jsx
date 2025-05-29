@@ -8,7 +8,7 @@ import { useAuth } from "../../context/auth"
 function Servicos() {
     const [busca, setBusca] = useState("");
     const [paginaAtual, setPaginaAtual] = useState(1);
-    const itensPorPagina = 3;
+    const itensPorPagina = 7;
     const [servicos, setServicos] = useState([]);  // Armazena os serviços
     const [erro, setErro] = useState(null); // Armazena erros da API
     const navigate = useNavigate();
@@ -102,34 +102,37 @@ function Servicos() {
                         </table>
                     </div>
 
-                    {/* Paginação */}
-                    <div className="mt-6 flex justify-center space-x-2">
-                        <button
-                            onClick={() => handlePagina(paginaAtual - 1)}
-                            disabled={paginaAtual === 1}
-                            className="w-8 h-8 bg-gray-200 text-black rounded"
-                        >
-                            &lt;
-                        </button>
-
-                        {Array.from({ length: Math.ceil(servicosFiltrados.length / itensPorPagina) }, (_, i) => (
+                    {/* Paginação Condicional */}
+                    {servicosFiltrados.length > itensPorPagina && (
+                        <div className="mt-6 flex justify-center space-x-2">
                             <button
-                                key={i}
-                                onClick={() => handlePagina(i + 1)}
-                                className={`w-8 h-8 rounded ${paginaAtual === i + 1 ? 'bg-black text-white' : 'bg-gray-200'}`}
+                                onClick={() => handlePagina(paginaAtual - 1)}
+                                disabled={paginaAtual === 1}
+                                className="w-8 h-8 bg-gray-200 text-black rounded disabled:opacity-50"
                             >
-                                {i + 1}
+                                &lt;
                             </button>
-                        ))}
 
-                        <button
-                            onClick={() => handlePagina(paginaAtual + 1)}
-                            disabled={paginaAtual === Math.ceil(servicosFiltrados.length / itensPorPagina)}
-                            className="w-8 h-8 bg-gray-200 text-black rounded"
-                        >
-                            &gt;
-                        </button>
-                    </div>
+                            {Array.from({ length: Math.ceil(servicosFiltrados.length / itensPorPagina) }, (_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => handlePagina(i + 1)}
+                                    className={`w-8 h-8 rounded ${paginaAtual === i + 1 ? 'bg-black text-white' : 'bg-gray-200'}`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+
+                            <button
+                                onClick={() => handlePagina(paginaAtual + 1)}
+                                disabled={paginaAtual === Math.ceil(servicosFiltrados.length / itensPorPagina)}
+                                className="w-8 h-8 bg-gray-200 text-black rounded disabled:opacity-50"
+                            >
+                                &gt;
+                            </button>
+                        </div>
+                    )}
+
                 </div>
             </div>
         </LayoutPrincipal>

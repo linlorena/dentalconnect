@@ -189,7 +189,6 @@ function MeusAgendamentos() {
           </div>
           <div>
             <h2 className="text-2xl font-bold">{nomeFormatado}</h2>
-            <p className="text-sm text-sky-100">Cadastrado em 31 de março de 2024</p>
             <p className="mt-1 text-sm bg-sky-800 bg-opacity-30 rounded-full px-3 py-1 inline-block">
               {agendamentosFiltrados.length} agendamento{agendamentosFiltrados.length !== 1 ? 's' : ''}
             </p>

@@ -45,7 +45,7 @@ function Servicos() {
 
     // Função para navegar para a tela de MeusAgendamentos
     const handleAgendar = (codigo) => {
-        navigate("/consultas");
+        navigate(`/consultas?procedimento=${codigo}`);
     };
 
     return (

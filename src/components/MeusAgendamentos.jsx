@@ -15,9 +15,17 @@ const MeusAgendamentos = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!id) {
-          console.error("ID do usuário não disponível")
-          setError("ID do usuário não disponível")
+        // Verificação mais robusta do ID
+        if (!id || id === 'undefined' || id === 'null') {
+          console.error("ID do usuário inválido:", id)
+          setError("ID do usuário não disponível. Por favor, faça login novamente.")
+          setLoading(false)
+          return
+        }
+
+        if (!token) {
+          console.error("Token não disponível")
+          setError("Token de autenticação não disponível. Por favor, faça login novamente.")
           setLoading(false)
           return
         }
@@ -45,7 +53,13 @@ const MeusAgendamentos = () => {
         setConsultas(consultasResponse.data)
       } catch (error) {
         console.error("Erro ao buscar dados:", error)
-        setError(error.message)
+        if (error.response?.status === 404) {
+          setError("Nenhum agendamento encontrado para este usuário.")
+        } else if (error.response?.status === 401) {
+          setError("Sessão expirada. Por favor, faça login novamente.")
+        } else {
+          setError(error.response?.data?.message || "Erro ao carregar agendamentos. Tente novamente mais tarde.")
+        }
       } finally {
         setLoading(false)
       }
@@ -55,6 +69,7 @@ const MeusAgendamentos = () => {
       fetchData()
     } else {
       setLoading(false)
+      setError("Dados de autenticação incompletos. Por favor, faça login novamente.")
     }
   }, [id, token, user])
 
@@ -69,7 +84,10 @@ const MeusAgendamentos = () => {
   if (error) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="text-red-500">Erro ao carregar agendamentos: {error}</div>
+        <div className="text-red-500 text-center p-4 bg-red-50 rounded-lg">
+          <p className="font-medium">Erro ao carregar agendamentos</p>
+          <p className="text-sm mt-2">{error}</p>
+        </div>
       </div>
     )
   }
@@ -77,7 +95,10 @@ const MeusAgendamentos = () => {
   if (!consultas || consultas.length === 0) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="text-gray-500">Nenhum agendamento encontrado.</div>
+        <div className="text-gray-500 text-center p-4 bg-gray-50 rounded-lg">
+          <p className="font-medium">Nenhum agendamento encontrado</p>
+          <p className="text-sm mt-2">Você ainda não possui agendamentos.</p>
+        </div>
       </div>
     )
   }

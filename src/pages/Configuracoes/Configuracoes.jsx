@@ -226,9 +226,14 @@ function Configuracoes() {
       const updatedLocalUserData = { ...userData, avatar: null };
       setUserData(updatedLocalUserData);
 
-      // Update auth context
+      // Update auth context with complete user data
       if (updateUserData) {
-        updateUserData({ ...userData, nome: novoNome, email: novoEmail, avatar: null, id, token });
+        updateUserData({
+          ...userData,
+          avatar: null,
+          id,
+          token
+        });
       }
 
       setAvatarSuccessMessage("Foto de perfil deletada com sucesso!");

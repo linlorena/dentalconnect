@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
   const [nome, setNome] = useState(localStorage.getItem("nome") || null)
   const [email, setEmail] = useState(localStorage.getItem("email") || null)
   const [id, setId] = useState(localStorage.getItem("id") || null)
+  const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || null)
 
   const [loading, setLoading] = useState(true)
   const [redirectPath, setRedirectPath] = useState(null)
@@ -34,6 +35,7 @@ export const AuthProvider = ({ children }) => {
         const storedNome = localStorage.getItem("nome")
         const storedEmail = localStorage.getItem("email")
         const storedId = localStorage.getItem("id")
+        const storedAvatar = localStorage.getItem("avatar")
 
         console.log("Dados armazenados:", {
           token: storedToken,
@@ -41,7 +43,8 @@ export const AuthProvider = ({ children }) => {
           tipo: storedTipo,
           nome: storedNome,
           email: storedEmail,
-          id: storedId
+          id: storedId,
+          avatar: storedAvatar
         })
 
         if (storedToken && storedUser && storedTipo) {
@@ -51,6 +54,7 @@ export const AuthProvider = ({ children }) => {
           setNome(storedNome)
           setEmail(storedEmail)
           setId(storedId)
+          setAvatar(storedAvatar)
         } else {
           console.log("Dados de autenticação incompletos, limpando localStorage")
           localStorage.removeItem("token")
@@ -59,12 +63,14 @@ export const AuthProvider = ({ children }) => {
           localStorage.removeItem("nome")
           localStorage.removeItem("email")
           localStorage.removeItem("id")
+          localStorage.removeItem("avatar")
           setToken(null)
           setUser(null)
           setTipo(null)
           setNome(null)
           setEmail(null)
           setId(null)
+          setAvatar(null)
         }
       } catch (error) {
         console.error("Erro ao inicializar autenticação:", error)
@@ -74,12 +80,14 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("nome")
         localStorage.removeItem("email")
         localStorage.removeItem("id")
+        localStorage.removeItem("avatar")
         setToken(null)
         setUser(null)
         setTipo(null)
         setNome(null)
         setEmail(null)
         setId(null)
+        setAvatar(null)
       } finally {
         setLoading(false)
       }
@@ -103,6 +111,11 @@ export const AuthProvider = ({ children }) => {
         throw new Error("Resposta inválida do servidor")
       }
 
+      // Verificar se o ID do usuário está presente
+      if (!response.data.user || !response.data.user.id) {
+        throw new Error("ID do usuário não encontrado na resposta")
+      }
+
       // Armazenar dados do usuário
       localStorage.setItem("token", response.data.token)
       localStorage.setItem("user", JSON.stringify(response.data.user))
@@ -110,6 +123,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("nome", response.data.nome)
       localStorage.setItem("email", response.data.email)
       localStorage.setItem("id", response.data.user.id)
+      localStorage.setItem("avatar", response.data.user.avatar)
 
       // Atualizar o estado
       setToken(response.data.token)
@@ -118,6 +132,7 @@ export const AuthProvider = ({ children }) => {
       setNome(response.data.nome)
       setEmail(response.data.email)
       setId(response.data.user.id)
+      setAvatar(response.data.user.avatar)
 
       const path = response.data.tipo === "dentista" ? "/dentista" : "/home"
       setRedirectPath(path)
@@ -129,6 +144,14 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Erro de login:", error)
+      // Limpar dados em caso de erro
+      localStorage.removeItem("token")
+      localStorage.removeItem("user")
+      localStorage.removeItem("tipo")
+      localStorage.removeItem("nome")
+      localStorage.removeItem("email")
+      localStorage.removeItem("id")
+      localStorage.removeItem("avatar")
       throw error
     } finally {
       setLoading(false)
@@ -142,6 +165,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("nome")
     localStorage.removeItem("email")
     localStorage.removeItem("id")
+    localStorage.removeItem("avatar")
 
     setToken(null)
     setUser(null)
@@ -149,6 +173,7 @@ export const AuthProvider = ({ children }) => {
     setNome(null)
     setEmail(null)
     setId(null)
+    setAvatar(null)
     setRedirectPath(null)
 
     window.location.href = "/"
@@ -164,8 +189,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("email", newData.email)
       setEmail(newData.email)
     }
-    if (newData.avatar) {
+    if (newData.avatar !== undefined) {
       localStorage.setItem("avatar", newData.avatar)
+      setAvatar(newData.avatar)
     }
     
     // Atualizar o objeto user no localStorage
@@ -173,6 +199,16 @@ export const AuthProvider = ({ children }) => {
     const updatedUser = { ...currentUser, ...newData }
     localStorage.setItem("user", JSON.stringify(updatedUser))
     setUser(updatedUser)
+
+    // Atualizar outros estados se necessário
+    if (newData.id) {
+      localStorage.setItem("id", newData.id)
+      setId(newData.id)
+    }
+    if (newData.token) {
+      localStorage.setItem("token", newData.token)
+      setToken(newData.token)
+    }
   }
 
   return (
@@ -185,6 +221,7 @@ export const AuthProvider = ({ children }) => {
         nome,
         email,
         id,
+        avatar,
         login,
         logout,
         loading,

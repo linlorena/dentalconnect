@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import LayoutPrincipal from "../../components/LayoutPrincipal";
 import AvatarDefault from "../../assets/avatar.png";
 import { useAuth } from "../../context/auth";
@@ -7,6 +7,7 @@ import axios from "axios";
 
 function Configuracoes() {
   const { nome, email, avatar, id, token, updateUserData } = useAuth();
+  const fileInputRef = useRef(null);
 
   const [novoNome, setNovoNome] = useState(nome || "");
   const [novoEmail, setNovoEmail] = useState(email || "");
@@ -16,6 +17,7 @@ function Configuracoes() {
   const [activeTab, setActiveTab] = useState("perfil");
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
@@ -33,6 +35,93 @@ function Configuracoes() {
   const formatarEmail = (email) => {
     if (!email) return "";
     return email;
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validar tipo de arquivo
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Tipo de arquivo não suportado. Use apenas JPEG, PNG ou GIF.');
+      return;
+    }
+
+    // Validar tamanho do arquivo (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('O arquivo é muito grande. O tamanho máximo permitido é 5MB.');
+      return;
+    }
+
+    setUploading(true);
+    setError("");
+
+    try {
+      console.log('Token:', token); // Debug do token
+      const formData = new FormData();
+      formData.append('avatar', file);
+
+      const response = await axios.post(
+        `http://localhost:3001/api/users/${id}/avatar`,
+        formData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      console.log('Resposta do upload:', response.data); // Debug da resposta
+
+      // Atualizar o contexto com a nova URL do avatar
+      updateUserData({
+        avatar: response.data.avatarUrl
+      });
+
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch (error) {
+      console.error('Erro ao fazer upload do avatar:', error);
+      console.error('Detalhes do erro:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        headers: error.response?.headers
+      });
+      setError(error.response?.data?.message || 'Erro ao fazer upload do avatar');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteAvatar = async () => {
+    try {
+      await axios.put(
+        `http://localhost:3001/api/users/${id}`,
+        { avatar: null },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Atualizar o contexto removendo o avatar
+      updateUserData({
+        avatar: null
+      });
+
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch (error) {
+      console.error('Erro ao deletar avatar:', error);
+      setError(error.response?.data?.message || 'Erro ao deletar avatar');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -140,33 +229,21 @@ function Configuracoes() {
 
           <div className="bg-white rounded-2xl shadow-md overflow-hidden">
             <div className="flex flex-col md:flex-row">
-              {/* Menu lateral */}
-              <div className="md:w-64 bg-white border-b md:border-b-0 md:border-r border-gray-200">
-                <nav className="p-4">
-                  {menuItems.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => setActiveTab(item.id)}
-                      className={`flex items-center w-full px-4 py-3 mb-2 rounded-xl transition-colors ${
-                        activeTab === item.id
-                          ? "bg-gray-100 text-custom-teal-dark font-medium"
-                          : "text-gray-600 hover:bg-gray-100"
-                      }`}
-                    >
-                      <span
-                        className={`mr-3 ${
-                          activeTab === item.id ? "text-custom-teal-hover" : "text-gray-500"
-                        }`}
-                      >
-                        {item.icon}
-                      </span>
-                      <span>{item.label}</span>
-                      {activeTab === item.id && (
-                        <span className="ml-auto w-1.5 h-5 bg-custom-teal rounded-full"></span>
-                      )}
-                    </button>
-                  ))}
-                </nav>
+              <div className="w-full md:w-64 bg-gray-50 p-4 md:p-6">
+                {menuItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
+                      activeTab === item.id
+                        ? "bg-custom-teal text-white"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </button>
+                ))}
               </div>
 
               <div className="flex-1 p-4 md:p-6 overflow-y-auto max-h-[calc(100vh-100px)]">
@@ -190,9 +267,19 @@ function Configuracoes() {
                             alt="Foto de perfil"
                             className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
                           />
-                          <div className="absolute bottom-0 right-0 bg-custom-teal p-2 rounded-full border-2 border-white shadow-sm cursor-pointer hover:bg-custom-teal-hover transition-colors">
+                          <div 
+                            className="absolute bottom-0 right-0 bg-custom-teal p-2 rounded-full border-2 border-white shadow-sm cursor-pointer hover:bg-custom-teal-hover transition-colors"
+                            onClick={handleAvatarClick}
+                          >
                             <Camera size={18} className="text-white" />
                           </div>
+                          <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            accept="image/jpeg,image/png,image/gif"
+                            className="hidden"
+                          />
                         </div>
 
                         <div className="flex flex-col justify-start">
@@ -204,18 +291,23 @@ function Configuracoes() {
                           <div className="flex flex-wrap gap-3">
                             <button
                               type="button"
-                              className="bg-custom-teal hover:bg-custom-teal-hover text-white font-medium px-5 py-2.5 rounded-xl shadow-sm transition-colors flex items-center gap-2"
+                              onClick={handleAvatarClick}
+                              disabled={uploading}
+                              className="bg-custom-teal hover:bg-custom-teal-hover text-white font-medium px-5 py-2.5 rounded-xl shadow-sm transition-colors flex items-center gap-2 disabled:opacity-50"
                             >
                               <Camera size={16} />
-                              Mudar Foto
+                              {uploading ? 'Enviando...' : 'Mudar Foto'}
                             </button>
-                            <button
-                              type="button"
-                              className="text-red-500 border border-gray-300 hover:bg-gray-100 font-medium px-5 py-2.5 rounded-xl shadow-sm transition-colors flex items-center gap-2"
-                            >
-                              <Trash size={16} />
-                              Deletar Foto
-                            </button>
+                            {avatar && (
+                              <button
+                                type="button"
+                                onClick={handleDeleteAvatar}
+                                className="text-red-500 border border-gray-300 hover:bg-gray-100 font-medium px-5 py-2.5 rounded-xl shadow-sm transition-colors flex items-center gap-2"
+                              >
+                                <Trash size={16} />
+                                Deletar Foto
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -278,7 +370,6 @@ function Configuracoes() {
                               placeholder="Digite sua nova senha"
                               value={senha}
                               onChange={(e) => setSenha(e.target.value)}
-                              minLength={8}
                               className="pl-10 pr-10 p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150"
                             />
                             {/* Botão de visibilidade à direita */}
@@ -304,7 +395,6 @@ function Configuracoes() {
                               placeholder="Confirme sua nova senha"
                               value={confirmacaoSenha}
                               onChange={(e) => setConfirmacaoSenha(e.target.value)}
-                              minLength={8}
                               className="pl-10 pr-10 p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150"
                             />
                             <button

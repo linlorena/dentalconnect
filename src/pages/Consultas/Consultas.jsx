@@ -138,8 +138,8 @@ function Consultas() {
     <LayoutPrincipal>
       <div className="max-w-3xl mx-auto w-full bg-white shadow-lg rounded-lg p-8">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-teal-600 mb-2">Agendar Consulta</h2>
-          <p className="text-gray-600">Escolha um dentista e um horário disponível para sua consulta</p>
+          <h2 className="text-3xl font-bold text-teal-600 mb-2">Agendar Avaliação</h2>
+          <p className="text-gray-600">Escolha um dentista e um horário disponível para sua avaliação</p>
         </div>
 
         {mensagemConfirmacao && (

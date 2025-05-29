@@ -75,8 +75,8 @@ function MeusAgendamentos() {
               
               // Se o agendamento tiver um serviço específico (diferente de 1), busca o procedimento
               let procedimento_nome = "Consulta de Rotina";
-              if (agendamento.servico && agendamento.servico !== 1) {
-                procedimento_nome = agendamento.servico.nome || "Procedimento não encontrado";
+              if (agendamento.servico && agendamento.servico !== 1 && agendamento.servico.nome) {
+                procedimento_nome = agendamento.servico.nome;
               }
               
               return {

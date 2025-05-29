@@ -119,7 +119,7 @@ function Consultas() {
       dentista: dentistaSelecionado.id,
       local: localSelecionado || 1,
       status: "Confirmado",
-      servico: procedimentoSelecionado || 1
+      servico: procedimentoSelecionado || null
     }, { headers })
       .then((response) => {
         setMensagemConfirmacao("Consulta agendada com sucesso! Redirecionando...");

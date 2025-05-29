@@ -137,63 +137,68 @@ function Configuracoes() {
   }
 
   // Trigger hidden file input click
-  const handleAvatarButtonClick = () => {
+  const handleAvatarClick = () => {
     fileInputRef.current?.click()
   }
 
   // Handle file selection and initiate upload
-  const handleFileChange = (event) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      handleAvatarUpload(file)
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validar tipo de arquivo
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Tipo de arquivo não suportado. Use apenas JPEG, PNG ou GIF.');
+      return;
     }
-    if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+
+    // Validar tamanho do arquivo (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('O arquivo é muito grande. O tamanho máximo permitido é 5MB.');
+      return;
     }
-  }
 
-  // Handle avatar upload logic (PUT with FormData)
-  const handleAvatarUpload = async (file) => {
-    if (!file || !id || !token) return
-
-    setUploadingAvatar(true)
-    setAvatarError("")
-    setShowAvatarSuccess(false)
-
-    const formData = new FormData()
-    formData.append("avatar", file)
+    setUploadingAvatar(true);
+    setError("");
 
     try {
-      // Use PUT on the user route for upload as well (assuming backend handles FormData)
-      const response = await axios.put(`http://localhost:3001/api/users/${id}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      console.log('Token:', token); // Debug do token
+      const formData = new FormData();
+      formData.append('avatar', file);
 
-      console.log("Avatar atualizado com sucesso:", response.data)
-      const newAvatarUrl = response.data.avatar
+      const response = await axios.post(
+        `http://localhost:3001/api/users/${id}/avatar`,
+        formData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
 
-      const updatedLocalUserData = { ...userData, avatar: newAvatarUrl };
-      setUserData(updatedLocalUserData);
+      console.log('Resposta do upload:', response.data); // Debug da resposta
 
-      if (updateUserData) {
-        // Preserve other potentially updated fields from userData state
-        updateUserData({ ...userData, nome: novoNome, email: novoEmail, avatar: newAvatarUrl, id, token })
-      }
+      // Atualizar o contexto com a nova URL do avatar
+      updateUserData({
+        avatar: response.data.avatarUrl
+      });
 
-      setAvatarSuccessMessage("Foto de perfil atualizada com sucesso!")
-      setShowAvatarSuccess(true)
-      setTimeout(() => setShowAvatarSuccess(false), 3000)
-
-    } catch (err) {
-      console.error("Erro ao fazer upload do avatar:", err)
-      setAvatarError(err.response?.data?.error || "Erro ao fazer upload do avatar. Tente novamente.")
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch (error) {
+      console.error('Erro ao fazer upload do avatar:', error);
+      console.error('Detalhes do erro:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        headers: error.response?.headers
+      });
+      setError(error.response?.data?.message || 'Erro ao fazer upload do avatar');
     } finally {
-      setUploadingAvatar(false)
+      setUploadingAvatar(false);
     }
-  }
+  };
 
   // Handle avatar deletion logic (PUT with avatar: null)
   const handleAvatarDelete = async () => {
@@ -347,13 +352,13 @@ function Configuracoes() {
                             type="file"
                             ref={fileInputRef}
                             onChange={handleFileChange}
-                            accept="image/png, image/jpeg, image/jpg, image/webp"
+                            accept="image/jpeg,image/png,image/gif"
                             style={{ display: 'none' }}
                           />
                           {/* Camera Icon Overlay (triggers file input) */}
                           <button
                              type="button"
-                             onClick={handleAvatarButtonClick}
+                             onClick={handleAvatarClick}
                              disabled={uploadingAvatar || loadingAvatar || deletingAvatar}
                              className="absolute bottom-0 right-0 bg-custom-teal p-2 rounded-full border-2 border-white shadow-sm cursor-pointer hover:bg-custom-teal-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                              title="Mudar Foto"
@@ -369,7 +374,7 @@ function Configuracoes() {
                           <div className="flex flex-wrap gap-3">
                             <button
                               type="button"
-                              onClick={handleAvatarButtonClick}
+                              onClick={handleAvatarClick}
                               disabled={uploadingAvatar || loadingAvatar || deletingAvatar}
                               className="bg-custom-teal hover:bg-custom-teal-hover text-white font-medium px-5 py-2.5 rounded-xl shadow-sm transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
@@ -438,7 +443,6 @@ function Configuracoes() {
                               placeholder="Digite sua nova senha (mín. 8 caracteres)"
                               value={senha}
                               onChange={(e) => setSenha(e.target.value)}
-                              minLength={8}
                               className="pl-10 pr-10 p-3 focus:shadow-gray-200 focus:shadow-md w-full rounded-lg bg-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-custom-teal ease-in duration-150"
                             />
                             <button type="button" onClick={visibilidadeSenha} className="absolute right-3 top-3 text-gray-500 cursor-pointer">
@@ -516,5 +520,5 @@ function Configuracoes() {
   )
 }
 
-export default Configuracoes;
-
+export default Configuracoes
+  

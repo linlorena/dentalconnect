@@ -75,9 +75,8 @@ function MeusAgendamentos() {
               
               // Se o agendamento tiver um serviço específico (diferente de 1), busca o procedimento
               let procedimento_nome = "Consulta de Rotina";
-              if (agendamento.servico && agendamento.servico !== 1) {
-                const procedimentoRes = await axios.get(`http://localhost:3001/api/services/${agendamento.servico}`, { headers });
-                procedimento_nome = procedimentoRes.data.nome || "Procedimento não encontrado";
+              if (agendamento.servico && agendamento.servico !== 1 && agendamento.servico.nome) {
+                procedimento_nome = agendamento.servico.nome;
               }
               
               return {
@@ -254,7 +253,7 @@ function MeusAgendamentos() {
                 <div className="flex items-center gap-2 mt-2">
                   <Stethoscope size={18} className="text-gray-500" />
                   <p className="text-sm text-gray-600 truncate">
-                    {agendamento.servico && agendamento.procedimento_nome ? agendamento.procedimento_nome : "Consulta de Rotina"}
+                    {agendamento.procedimento_nome}
                   </p>
                 </div>
               </div>

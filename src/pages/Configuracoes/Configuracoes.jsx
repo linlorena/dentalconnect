@@ -254,9 +254,21 @@ function Configuracoes() {
   ]
 
   const duvidasFrequentes = [
-    { pergunta: "Como agendar uma consulta?", resposta: "..." },
-    { pergunta: "Como atualizar meus dados pessoais?", resposta: "..." },
-    { pergunta: "Posso ver meu histórico de consultas?", resposta: "..." },
+    {
+      pergunta: "Como agendar uma consulta?",
+      resposta:
+        "Para agendar uma consulta, acesse a página de Serviços para escolher o procedimento e clique em 'Agendar Consulta', escolha o dentista e selecione a data e horário disponíveis.",
+    },
+    {
+      pergunta: "Como atualizar meus dados pessoais?",
+      resposta:
+        "Acesse a seção 'Perfil' nas configurações e atualize seus dados no formulário. Não esqueça de clicar em 'Salvar Alterações' após realizar as modificações.",
+    },
+    {
+      pergunta: "Posso ver meu histórico de consultas?",
+      resposta:
+        "Sim, na seção 'Agendamentos' você encontra todo o histórico de consultas realizadas e agendadas, incluindo datas, horários e dentistas.",
+    },
   ]
 
   const displayAvatarUrl = getAvatarUrl(userData?.avatar);

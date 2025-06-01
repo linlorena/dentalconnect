@@ -16,8 +16,8 @@ import Tratamentos from "./pages/Tratamentos/Tratamentos"
 import Servicos from "./pages/Servicos/Servicos"
 import Consultas from "./pages/Consultas/Consultas"
 import Configuracao from "./pages/Configuracoes/Configuracoes"
-import SearchResultsPage from "./pages/ResultadosDeBusca/SearchResultsPage"; 
-
+import SearchResultsPage from "./pages/ResultadosDeBusca/SearchResultsPage";
+import VLibras from "@djpfs/react-vlibras";
 
 const AppRoutes = () => {
   const { signed, loading } = useAuth()
@@ -121,6 +121,7 @@ const AppRoutes = () => {
 const App = () => {
   return (
     <React.StrictMode>
+      <VLibras />
       <AuthProvider>
         <AppRoutes />
       </AuthProvider>

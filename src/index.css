@@ -12,3 +12,15 @@
 body {
   font-family: "Inria Sans", sans-serif;
 }
+
+[vw] {
+  position: fixed !important;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+[vw-access-button] {
+  bottom: 0 !important;
+  right: 0 !important;
+}
